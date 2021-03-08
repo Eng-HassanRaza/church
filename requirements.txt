@@ -1,11 +1,20 @@
+asgiref==3.3.1
+beautifulsoup4==4.9.3
+bootstrap4==0.1.0
+certifi==2020.12.5
+chardet==4.0.0
 Django==3.1.5
-gunicorn==19.9.0
-psycopg2==2.8.3
+django-bootstrap4==2.3.1
 django-filter==2.4.0
 djangorestframework==3.12.2
-django-bootstrap4==2.3.1
+gunicorn==19.9.0
+idna==2.10
+leaderboard @ git+git://github.com/YuriHeupa/leaderboard-python.git@ccf3b284db35512950909aed8d1d3436557d3efb
+psycopg2==2.8.3
+pytz==2021.1
 redis==3.4.1
-
-# keep until merged
-# https://github.com/agoragames/leaderboard-python/pull/62
-git+git://github.com/YuriHeupa/leaderboard-python.git@ccf3b284db35512950909aed8d1d3436557d3efb
+requests==2.25.1
+soupsieve==2.2
+sqlparse==0.4.1
+stripe==2.56.0
+urllib3==1.26.3
