@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<h3 align="center">Search Options</h3>
+<form method="get">
+    {{ object_list.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% for object in object_list.qs%}
+
+      	{% if object.student == request.user %}
+{% include 'attendance_list_inline.html'%}
+{% endif %}
+
+{% endfor %}
+
+{% else %}
+
+{% load static %}
+    <center><img id="header-img" src="{% static 'images/attendance.jpg' %}"
+
+{% endif %}
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{object.meeting_date}}</h1>
+<p> Recorder: {{object.recorder}} </p>
+<p> Minutes: {{object.minutes_details}} </p>
+
+{% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+        
+      <a href='{{ object.get_edit_url }}' > Edit Minutes from the {{object.meeting_date}} Meeting</a>
+      <div></div>
+      {% endif %}
+<p></p>
+<!--       <form>
+<input type=button value="Print Minutes" onClick="javascript:window.print()">
+</form> -->
+
+<br/>
+<a href="#" onclick="window.print()" class="btn btn btn-primary">Print Minutes</a>
+
+{% endblock %}

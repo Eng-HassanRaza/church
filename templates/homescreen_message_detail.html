@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+<title>Homescreen Detail - {{ object.subject }}</title>
+{% endblock %}
+
+{% block content %}<title>Homescreen Detail - {{ object.subject }}</title>
+
+  <div class="row my-4">
+    <div class="col d-flex justify-content-end">
+      <a href="{% url 'list-homescreen-message' %}" class="btn mx-2 btn-info">Back</a>
+      <a href="{% url 'edit-homescreen-message' object.id %}" class="btn btn-primary mx-2">Edit</a>
+      <a href="{% url 'delete-homescreen-message' object.id %}" class="btn btn-danger mx-2">Delete</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h4>{{ object.subject }}</h4>
+      <p>{{ object.message }}</p>
+
+      <div class="">
+        <p><b>Begin Showing Message On</b> {{ object.start_date }}</p>
+        <p><b>Expire The Message On</b> {{ object.end_date }}</p>
+      </div>
+
+      {% if object.image %}
+        <img style="" src="{{ object.image.url }}" alt="" class="img-responsive img-thumbnail">
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h4>Visible To These Members</h4>
+
+      <table class="table table-responsive table-striped">
+        <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+
+          <th>EMail</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for recipient in object.recipients.all %}
+          <tr>
+            <td>{{ recipient.first_name }}</td>
+            <td>{{ recipient.last_name }}</td>
+
+            <td>{{ recipient.email }}</td>
+          </tr>
+        {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endblock %}

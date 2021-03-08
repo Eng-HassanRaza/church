@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 align="center"> Scroll Down to View All or Filter </h3>
+<form method="get">
+    {{ object_list.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% for object in object_list.qs%}
+{% include 'church_list_inline.html'%}
+
+{% endfor %}
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+
+
+
+{% endblock %}

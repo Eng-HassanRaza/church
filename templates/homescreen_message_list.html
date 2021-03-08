@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+  
+{% endblock %}<title>Messages</title>
+
+{% block content %}
+
+  <div class="row my-4 d-flex">
+    <a href="{% url 'create-homescreen-message' %}" class="btn btn-primary">Add New Message</a>
+  </div>
+    <div class="row">
+        <div class="col mt-4">
+
+            <h3>Search Messages</h3>
+
+          <form action="" method="get">
+            <table>
+              {{ filter.form.as_table }}
+            </table>
+
+            <input type="submit" value="Search" class="btn btn-sm btn-primary">
+          </form>
+
+            <table class="table table-responsive table-striped mt-2" style="table-layout: fixed;">
+              <thead>
+              <tr>
+                <th></th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Date</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              {% for object in objects %}
+                <tr>
+                  <td>
+                    <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-info btn-block">View</a>
+                    <a href="{% url 'edit-homescreen-message' object.id %}" class="btn btn-sm btn-primary btn-block">Edit</a>
+                    <a href="{% url 'delete-homescreen-message' object.id %}" class="btn btn-sm btn-danger btn-block">Delete</a>
+                  </td>
+                  <td>{{ object.subject }}</td>
+                  <td style="max-width: 350px; width: 250px">{{ object.message | truncatechars_html:100 }}</td>
+                  <td>
+                   <p><b>Created<br> </b> {{ object.created|date:"m/d/y" }}</p>
+                  <p><b>Started<br> </b>{{ object.start_date|date:"m/d/y" }}</p>
+                  <p><b>Ended<br> </b>{{ object.end_date|date:"m/d/y" }}</p>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3">No message here</td>
+                </tr>
+              {% endfor %}
+
+              </tbody>
+
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_scripts %}
+<script>
+jQuery(() => {
+  $("#id_start_date, #id_end_date").datepicker()
+})
+</script>
+{% endblock %}

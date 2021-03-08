@@ -1,0 +1,16 @@
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'>
+      {{object.course.course_title}}</h3>
+      <div class = 'card-text'>Date: {{object.attendance_date}}<br/>
+      Attendee: {{object.student.first_name}} {{object.student.last_name}}</div>
+      <div>
+      {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+     <a href='{{ object.get_delete_url }}' > Delete this Attendance</a>
+{% endif %}
+      
+
+  </div>
+</div>
+</div>

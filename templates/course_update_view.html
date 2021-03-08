@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+<h2>Current Information for {{object.course_title}}</a></h2>
+    <h3 class = 'card-title'>{{object.course_title}} -- Teacher: {{object.teacher.first_name}} {{object.teacher.last_name}}</h3>
+       <div class = 'card-text'>
+        Starts On: {{object.start_date}} Ends On: {{object.end_date}}<br/>
+       Start Time: {{object.start_time}} - End Time: {{object.end_time}}<br/>
+     Held On: {{object.day}} Each Week<br/>
+     Description: {{object.description}} <br/>
+   </div>
+     </div>
+  </div>
+</div>
+
+
+<form method='POST' action='.'>  {% csrf_token %}
+  {{ form.as_p }}
+  <button type=submit 'submit'> Submit </button>
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+
+
+
+{% endblock %}

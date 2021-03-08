@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center">Delete Member?</h1>
+<p> {{object.first_name}} {{object.last_name}} </p>
+<p></p>
+<a href="{{object.email}}"> eMail: {{object.email}}</a>
+  <p></p>
+  Phone: {{object.phone_number}}
+<p></p>
+<form action="/members">
+    <input type="submit" value="No, Do Not Delete" />
+</form>
+
+<p></p>
+
+
+<form method='POST'> {% csrf_token%}
+
+  <button class = 'btn btn-danger'> Yes, Delete </button>
+
+  </form>
+{% endblock %}

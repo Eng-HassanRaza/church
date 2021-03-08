@@ -1,0 +1,56 @@
+<div class='col-80 col-md-100 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'></h3>
+<h5 class = 'card-title'>
+
+
+
+{% if request.user.church == object.course.church %}
+              
+                {{object.course.course_title}}</h5> 
+<p>{% if object.course.day %}
+                every
+                {{object.course.day}} 
+                {% endif %}
+
+{% if object.course.start_date %}
+                from {{object.course.start_date}}
+                {% endif %}
+     {% if object.course.end_date %}   
+          to {{object.course.end_date}}   
+                {% endif %} 
+
+
+{% if object.course.start_time %}
+                from {{object.course.start_time}}{% endif %}
+     {% if object.course.end_time %}   
+          to {{object.course.end_time}}   
+                {% endif %} 
+
+{% if object.course.teacher %}
+                Teacher:
+                {{object.course.teacher.first_name}} 
+                {{object.course.teacher.last_name}} 
+                {% endif %}
+               </p>
+
+<strong>Attendees Registered:</strong><br/>
+              {% for registration in registration_list%}
+{% if object.course.course_title == registration.course.course_title %}
+
+{{registration.member.first_name}} {{registration.member.last_name}}<br/>
+{% endif %}{% endfor %}
+{% endif %}
+
+{% for count in course_counts %}
+{% if count.course == object.course.id %}<br/><strong>
+Total for this class: {{count.member__count}}</strong>
+
+{% endif %}
+{% endfor %}
+
+      <p></p>
+  </div>
+  </div>
+</div>

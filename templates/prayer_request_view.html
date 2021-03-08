@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+<h3 align="center"> Search Here</h3>
+<form method="get">
+    {{ object_list.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+<center>
+<form action="/prayer-request">
+    <input type="submit" value="Request a NewPrayer" />
+</form></center>
+
+
+{% else %}
+<p>
+	<br/><br/><br/></p><center>
+<form action="/prayer-request">
+    <input type="submit" value="Request Prayer" />
+</form></center>
+
+{% endif %}
+
+{% for object in object_list.qs%}
+{% include 'prayer_request_inline.html'%}
+
+{% endfor %}
+
+<p>
+	<br/><br/><br/></p>
+{% endblock %}
+
+

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 align="center">Search Options</h3>
+<form method="get">
+    {{ object_list.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+{% for object in object_list.qs%}
+
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'>{{ object.course.course_title }}</h3>
+      <div class = 'card-text'>
+
+{% for attendance in attendance_list %}
+{% if attendance.course.course_title == object.course.course_title %}
+    {{ attendance.attendance_date }} -- 
+{{attendance.student.first_name}} {{attendance.student.last_name}}
+<br/>
+{% endif %}
+{% endfor %}
+
+{% for count in course_counts %}
+{% if count.course == object.course.id %}<br/><strong>
+Total for this class: {{count.present__count}}</strong>
+
+{% endif %}
+{% endfor %}
+  </div>
+</div>
+</div>
+{% endfor %}
+{% endblock %}

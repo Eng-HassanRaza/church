@@ -1,0 +1,17 @@
+<!-- #epiclive  for heroku -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{object.first_name}} {{object.last_name}} </h1>
+<p> Member eMail: {{object.email}} </p>
+<p> Member Phone: {{object.phone_number}} </p>
+
+{% if user.email == object.email%}
+<div>
+      <a href='{{ object.get_edit_url }}' > Edit Your Information</a>
+      </div>
+      {% endif %}
+
+
+{% endblock %}

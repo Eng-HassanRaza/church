@@ -1,0 +1,28 @@
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'>
+      {{object.name}}</h3>
+      <div class = 'card-text'>Account Number: {{object.account_number}}<br/>
+        Routing Number: {{object.routing_number}}<br/>
+        Name: {{object.name}}
+        Description: {{object.description}}<br/>
+        Current Balance: {{object.current_balance}}<br/>
+        Account Type: {{object.account_type}}
+        Beginning Balance: {{object.beginning_balance}}
+      </div>
+
+
+      {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+
+      <a href='{{ object.get_edit_url }}' > Edit
+        {{object.name}}</a><br/>
+        {% if request.user.groups.all.0.name == "Owner" %}
+     <a href='{{ object.get_delete_url }}' > Delete {{object.name}}</a>
+     {% endif %}
+{% endif %}
+      
+
+  </div>
+</div>
+</div>

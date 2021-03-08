@@ -1,0 +1,23 @@
+<!-- #epiclive  for heroku -->
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<form action="/">
+    <input type="submit" value="Return Home" />
+</form>
+<p></p>
+
+<form method='POST' action='.'>  {% csrf_token %}
+  {{ form.as_p }}
+  <button type='submit'> Submit </button>
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+
+
+	
+
+{% endblock %}

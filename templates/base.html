@@ -1,0 +1,127 @@
+<style>
+    #myBtn {
+        z-index: +1;
+        position: fixed;
+        bottom: 10px;
+        float: right;
+        right: 18.5%;
+        left: 77.25%;
+        max-width: 40px;
+        width: 100%;
+        font-size: 10px;
+        border-color: rgba(85, 85, 85, 0.2);
+        background-color: rgb(000,000,000);
+        padding: .5px;
+        border-radius: 4px;
+    }
+    #bg{
+    background-size: 1800px 900px;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-attachment: fixed;
+}
+</style>
+<!doctype html>
+
+
+      
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="token" content="{{ access_token }}"/>
+    <meta name="description" content="Church Management Software">
+    <meta name="author" content="Tyner Creek Software">
+    <meta name="keywords" content="church, management, attendance, contribution, reports, religious software, virtual church, online church, church accounting">
+    <center> 
+        {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" type="text/javascript"></script>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha256-rByPlHULObEjJ6XQxW/flG2r+22R5dKiAoef+aXWfik=" crossorigin="anonymous" />
+    {% block custom_styles %}
+    {% endblock %}
+
+    <h1 id="page-title" style="text-align:center">{{title}}</h1></center>
+    <button id="myBtn"><a href="#top" style="color: white">Go to Top</a></button>
+</head>
+<body>
+
+
+<body id="bg" style="background-image: url('{% static "images/cross.jpeg"%}')";>
+
+<a href="#top"></a>
+<div id="banner-msg" class="d-none"><span id="banner-msg-box"></span>
+    <button id="banner-close" class="close" aria-hidden="true">&times</button></div>
+{% include 'navbar.html' %}
+<div class='container'>
+
+
+
+    <div class='row'>
+        <div class='{% if not container_expand %}col-8{% endif %} mx-auto'>
+            {% block head_title %}
+            {% endblock %}
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script>
+  $(document).ready(() => {
+    var token = $("meta[name='token']").attr("content");
+    $.ajaxSetup({
+      headers : {
+        'Authorization' : `Bearer ${token}`
+      }
+  })
+});
+</script>
+<script>
+        $( function() {
+            $( "#datepicker" ).datepicker({ dateFormat: 'mm/dd/yy' });
+            $( "#id_attendance_date" ).datepicker({ dateFormat: 'mm/dd/yy' });
+            $( "#id_meeting_date" ).datepicker({ dateFormat: 'mm/dd/yy' });
+            $( "#id_start_date" ).datepicker({ dateFormat: 'mm/dd/yy' });
+            $( "#id_end_date" ).datepicker({ dateFormat: 'mm/dd/yy' });
+            $( "#timepicker" ).timepicker();
+            $( "#id_start_time" ).timepicker();
+            $( "#id_end_time" ).timepicker();
+        } );
+    var match = /\?messages=(.+?)(?:&|\?|$)/.exec(window.location.href);
+    if (match && match.length >= 2) {
+        var message = decodeURIComponent(match[1]);
+        $('#banner-msg-box').html(message);
+        $('#banner-msg').removeClass('d-none');
+    }
+    $('#banner-close').click(function () {$('#banner-msg').addClass('d-none')});
+    $(document).on("click", "#banner-close", function(){
+     $("#banner-msg").addClass("d-none")
+    })
+</script>
+{% block custom_scripts %}
+{% endblock %}
+<!-- <center>
+    <div font=10, align='center' , color='grey' , style='italics'>By logging into and using this site, you agree to our<a href="/privacy"> privacy policy</a> and <a href="/terms-of-use">terms of use.</a></center> -->
+</body>
+</html>
+  <!--     {% if request.user.district.logo %}
+      <img id="header-img" src="{{ request.user.district.logo.url }}" width="100px"/>
+      {% else %}
+      <img id="header-img" src="{% static 'images/doinggrades.jpg' %}" width="100px"/>
+      {% endif %} -->
+   
+

@@ -1,0 +1,18 @@
+<!-- #epiclive  for heroku -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{object.name}}</h1>
+<p>{{object.street_address}}</p>
+<p>{{object.street_address_line_2}}</p>
+<p>{{object.city}}</p>
+<p> Phone: {{object.phone_number}} </p>
+
+{% if request.user.groups.all.0.name == "Admin" or request.user.groups.all.0.name == "Owner" %}
+      <a href='{{ object.get_edit_url }}' > Edit {{object.name}}</a>
+      <div></div>
+      {% endif %}
+
+{% endblock %}
+

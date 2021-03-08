@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}<title>Messages</title>
+  <div class="row">
+    <div class="col">
+      <form id="create-message" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+          {{ forms.message.as_table }}
+        </table>
+
+        {% if forms.additional_error %}
+          <div class="alert alert-danger">{{ forms.additional_error }}</div>
+        {% endif %}
+        <div class="form-group my-2">
+          <button data-state="{% if is_something_selected %}checked{% else %}unchecked{% endif %}" id="select-all" class="btn btn-primary btn-sm">
+          {% if is_something_selected %}
+            Deselect All Members
+          {% else %}
+            Select All Members
+          {% endif %}
+          </button>
+        </div>
+
+        <table class="table table-hover table-striped table-responsive">
+          <thead>
+          <tr>
+            <th></th>
+            <th>First</th>
+            <th>Last</th>
+
+            <th>Email</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            {% for member in members %}
+              <tr>
+                <td><input type="checkbox" name="student" id="student_{{ student.pk }}" value="{{ student.pk }}" {% if student in message.recipients.all %}checked{% endif %}></td>
+                <td><label for="student_{{ student.pk }}">{{ member.first_name }}</label></td>
+                <td><label for="student_{{ student.pk }}">{{ member.last_name  }}</label></td>
+
+                
+                <td><label for="student_{{ student.pk }}">{{ member.email }}</label></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+
+        <div class="input-group"><input type="submit" value="Submit" class="btn btn-primary"></div>
+      </form>
+
+    </div>
+  </div>
+
+  <script async>
+    jQuery(document).ready(() => {
+      jQuery("#id_start_date, #id_end_date").datepicker()
+
+      jQuery("#select-all").click(function(e){
+        e.preventDefault()
+        if (this.dataset.state === "checked"){
+          jQuery("[id^='student_']").attr("checked", false)
+          this.dataset.state = "unchecked"
+          this.textContent = "Select All Members"
+        } else {
+          jQuery("[id^='student_']").attr("checked", true)
+          this.dataset.state = "checked"
+          this.textContent = "Deselect All Members"
+        }
+      })
+    })
+  </script>
+
+{% endblock %}

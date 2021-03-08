@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block head_title %}<title>Login</title>
+
+
+  {% if error %}
+    <p class="text-danger">
+      That login information was not recognized or you are not authorized to view that content. If you have forgotten something, use the links below to retrieve or reset your information.
+    </p>
+    <!-- <ul>
+      <li><a href="{% url 'password_reset' %}">Forgot Password</a>? Enter your email address to receive a link to reset your password.</li>
+      <li><a href="{% url 'username_problem:forgot-username' %}">Forgot Username</a>? Enter your email address to receive a link to retrieve your username.</li>
+    </ul> -->
+  {% endif %}
+
+  <div id="login">
+        <form class="form-horizontal" name="LoginForm" action="/login/" method="post">
+        	<input type='hidden' name='csrfmiddlewaretoken' value='randomchars' />
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="username">Username</label>
+            <div class="controls">
+                <input type="text" id="username" name="username"  placeholder="Username">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+                <input type="password" name="password" id="password" placeholder="Password"><br/>
+                <p></p>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type= submit"submit">Login</button>
+            </div>
+        </div>
+        </form>
+    </div>
+
+  {% endblock %}

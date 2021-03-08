@@ -1,0 +1,65 @@
+
+{% extends "base.html" %}
+{% block head_title %}<title>Home</title>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-154618738-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154618738-1');
+</script>
+
+
+
+
+
+<div class="row">
+    <div class="row col-md-6 boxlayout pt-5 mr-2">
+ {% if user.is_authenticated %}
+<center><h2>Click on the Study tab to compete with your fellow members!</h2>
+        {% else %}
+        <center><h1>
+<p style="font-family:courier; color:red;">Get a church site customized for YOUR church by clicking <a href="/request-church-account">here.</a></p></h1>
+{% endif %}</center>
+
+    </div>
+
+    <div class="row col-md-6 boxlayout">
+
+
+       {% load static %}
+    <center><a href="/study/verse-browse"><img id="header-img" src="{% static 'images/openbible.png' %}" width="100%"/></a>
+
+<h1>
+<p><a href="/study/verse-browse">Click to read the bible.</p></h1></a>
+
+</center>
+    </div>
+</div>
+
+
+{% if user.is_authenticated %}
+      <center><h2>Welcome to {{ request.user.church.name }} Online, {{ request.user.first_name }} </h2>
+        {% else %}
+       
+        <p><a href="/login" class = 'btn btn-danger'>Log into your church site here.</a></p><h1>
+<p>Don't have a log in?  Request your own account <a href="/request-account">here.</a></p></h1> </center>
+        {% endif %}
+
+<p></p>
+      
+
+          <center> <a href="https://www.hitwebcounter.com" target="_blank">
+        <img src="https://hitwebcounter.com/counter/counter.php?page=7168226&style=0008&nbdigits=6&type=page&initCount=315" title="Counter For Website Hitwebcounter" Alt="hitwebcounter.com"   border="0" >
+        </a>   </center>  
+        <p>
+
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% for object in object_list%}
+{% include 'accounts_list_inline.html'%}
+
+{% endfor %}
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+
+
+
+{% endblock %}

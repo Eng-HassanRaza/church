@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Don't see your church listed?  </h1>
+<h2><p style="font-family:courier; color:red;">Get a church site customized for YOUR church by clicking <a href="/request-church-account">here.</a></p><h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="form-actions">
+      <button type="submit">Request Account</button><br/>
+    </div>
+</form>
+<p></p><p></p>
+<p>You may contact the church directly with any questions.</p>
+<p>
+
+
+{% endblock %}

@@ -1,0 +1,21 @@
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'>
+      {{object.datestamp}}</h3>
+      
+      <div>
+        Recorded by: {{object.recorder.user.first_name}} {{object.recorder.user.last_name}}
+      </div>
+      <a href='{{ object.get_absolute_url }}' > Expand Details
+        {{object.meeting_date}}</a><br/>
+      {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+      <a href='{{ object.get_edit_url }}' > Edit
+        {{object.meeting_date}}</a><br/>
+     <a href='{{ object.get_delete_url }}' > Delete {{object.meeting_date}}</a>
+{% endif %}
+      
+
+  </div>
+</div>
+</div>

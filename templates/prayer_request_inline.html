@@ -1,0 +1,28 @@
+
+
+<div class='col-20 col-md-50 mb-1 mx-auto'>{% if request.user.church == object.church %}
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'>
+      Pray For: {{object.person}}</h3>
+        {{object.prayer}}<br/>
+      Requested By:  {{object.author.first_name}} {{object.author.last_name}}<br/>
+        {{object.datestamp}}<br/>
+    
+       {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+      <a href='{{ object.get_edit_url }}' > Edit Prayer Request</a><br/>
+     <a href='{{ object.get_delete_url }}' > Delete Prayer Request</a>
+
+ {% elif request.user == object.author%}        
+      <a href='{{ object.get_edit_url }}' > Edit Prayer Request</a><br/>
+     <a href='{{ object.get_delete_url }}' > Delete Prayer Request</a>
+      <div></div>
+      {% endif %}
+
+    {% endif %}
+
+
+  </div>
+</div>
+</div>
+

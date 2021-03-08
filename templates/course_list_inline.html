@@ -1,0 +1,21 @@
+
+
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+    <h3 class = 'card-title'>{{object.course_title}} -- {{object.teacher.first_name}} {{object.teacher.last_name}}</h3>
+       <div class = 'card-text'>
+        {{object.start_date}} - {{object.end_date}}<br/>
+       {{object.start_time}} - {{object.end_time}}<br/>
+     {{object.day}}<br/>
+     {{object.description}} <br/>
+
+       {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+
+     <a href='{{ object.get_edit_url }}' > Edit this Event</a><br/>
+     <a href='{{ object.get_delete_url }}' > Delete this Event</a>
+{% endif %}
+   </div>
+     </div>
+  </div>
+</div>

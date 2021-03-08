@@ -1,0 +1,501 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}<title>Name the Book</title>
+<style>
+/**
+  .game-menu {
+  line-height: 7px;
+}
+**/
+
+img {
+  border-radius: 0 !important;
+}
+
+.modal-dialog {
+  padding-top: 15%;
+}
+
+img:hover{
+  cursor :pointer;
+}
+
+
+.book-title {
+  padding-top:20%;
+  padding-bottom:20%;
+  font-size: 19px;
+}
+</style>
+
+
+<div class="modal fade" id="confirm-quit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Do you you really want to quit or keep trying to get on the leaderboard?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">CONTINUE</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" OnClick="bitirMenu(true);">GIVE UP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not play %}
+<div class="container mt-3">
+<center>
+{% include 'study/leaderboard.html' %}
+<a class="btn btn-lg btn-primary mt-2" style="width:150px;height:150px;padding-top:45px;font-size:2rem;" href="{% url "name-the-book" %}?play=1" role="button"><b>PLAY</b></a>
+</center>
+</div>
+{% endif %}
+
+{% if play %}
+<div class="container mt-3">
+    <center>
+        <div id="seviyeSec" class="card" style="width: 50rem;display: block;">
+          <div class="card-body">
+            <center>
+                <div style="width:25rem;">
+                    <h5 class="card-title">Choose Level</h5>
+                    <button OnClick="seviyeSec(1);" type="button" class="btn btn-primary btn-lg btn-block">Beginner</button>
+                    <button OnClick="seviyeSec(2);" type="button" class="btn btn-primary btn-lg btn-block">Advanced</button>
+                </div>
+            </center>
+          </div>
+          </div>
+          
+          <div id="oyun" class="card text-center" style="width: 50rem;display: none;">
+          <div id="seviye" class="card-header">
+          </div>
+          <div class="card-body pb-1">
+            <h6 id="score" class="card-title">Score : 0</h6>
+            <h5 id="kelime" class="card-title mb-0">Loading...</h5>
+            <div style="height: 25px;"><span id="tryagain" style="display: none;"><small>Try Again!</small></span></div>
+            <div class="row row-cols-1 row-cols-md-3">
+              <div class="col mb-3">
+                <div class="card">
+                <div id="r0" style="cursor: pointer" OnClick="sec(0);">
+                  {% comment %}<img OnClick="sec(0);" style="display: none;" id="im1" src="about:blank" class="card-img-top" alt="...">{% endcomment %}
+                  <div style="min-height:120px;" class="overflow-auto">
+                    <p id="desc1" class="card-text book-title"></p>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col mb-3">
+                <div class="card">
+                <div id="r1" style="cursor: pointer" OnClick="sec(1);">
+                  {% comment %}<img OnClick="sec(1);" style="display: none;" id="im2" src="about:blank" class="card-img-top" alt="...">{% endcomment %}
+                  <div style="min-height:120px;" class="overflow-auto">
+                    <p id="desc2" class="card-text book-title"></p>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col mb-3 advanced-mark">
+                <div class="card">
+                <div id="r2" style="cursor: pointer" OnClick="sec(2);">
+                  {% comment %}<img OnClick="sec(2);" style="display: none;" id="im3" src="about:blank" class="card-img-top" alt="...">{% endcomment %}
+                  <div style="min-height:120px;" class="overflow-auto">
+                    <p id="desc3" class="card-text book-title"></p>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col mb-3 advanced-mark">
+                <div class="card">
+                <div id="r3" style="cursor: pointer" OnClick="sec(3);">
+                  <div style="min-height:120px;" class="overflow-auto">
+                    <p id="desc4" class="card-text book-title"></p>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mb-1"><img id="star1" style="visibility:hidden;" src="{% static "study/verse-practice/cross.png" %}" width="45" height="45"><img id="star2" style="visibility:hidden;" src="{% static "study/verse-practice/cross.png" %}" width="45" height="45"><img id="star3" style="visibility:hidden;" src="{% static "study/verse-practice/cross.png" %}" width="45" height="45"></p>
+
+          <div class="card-footer text-muted" style="line-height:0px;">
+            <h5 id="sure" class="card-title">0:00</h5><br>
+            <button id="bitir" type="button" class="btn btn-danger btn-lg btn-block" OnClick = "bitirMenu();";>QUIT</button>
+          </div>
+        </div>
+
+        <div id="bitismenu" class="card" style="width: 50rem;display: none;">
+          <div class="card-body"><center>
+            <h2 id="seviye_M" class="card-title">Level</h2><br>
+            <h3 id="sure_M" class="card-title">Time</h3><br>
+            <h4 id="score_M" class="card-title">Score</h4><br>
+            <h5 id="eYPuan_M" class="card-title">Best Score</h5><br>
+            <p class="card-text">Thank you for playing!</p>
+            <div style="width: 25rem;">
+                <button type="button" class="btn btn-primary btn-lg btn-block" OnClick="menuyedon();">New Game</button><br>
+            </div>
+            </center>
+          </div>
+          </div>
+
+          
+        </div>
+    </center>
+</div>
+{% endif %}
+
+<script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script></head>
+<script src="{% static "study/verse-practice/mobile-detect.min.js" %}"></script>
+<script>
+createjs.Sound.registerSound("{% static "study/verse-practice/correct.mp3" %}", "correct");
+createjs.Sound.registerSound("{% static "study/verse-practice/wrong.mp3" %}", "wrong");
+
+var api_url = "{% url "ctv-get-word" %}";
+var seviye = 0;
+var oyunBasla = false;
+var wait = false;
+//var resimler = [];
+var aciklamalar = [];
+var kelimeler = [];
+var best = {{ best }};
+var ilerleme = 0;
+var dogru = 0;
+var bitti = true;
+var saniye = 0;
+var dakika = 0;
+var puan = 0;
+var yildiz = 0;
+var kombo = 0;
+var soru = 0;
+var real_score = 0;
+
+function seviyeSec(i){
+    if (i == 2) {
+       $(".advanced-mark").show(); 
+    }
+    seviye = i;
+    document.getElementById("seviyeSec").style.display = "none";
+    document.getElementById("oyun").style.display = "block";
+    yeniSoru();
+}
+
+function pausecomp(ms)
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); }
+    while(curDate-date < ms);
+}
+
+var starter_call;
+function yeniSoru(){
+    var sayac = 0;
+    var target = (seviye == 1) ? 2 : 4;
+    if(!oyunBasla){ // fetch 3 questions then show first question
+        aciklamalar = [];
+        kelimeler = [];
+        resimUrl = [];
+        dogru = Math.floor(Math.random() * target);
+        $.getJSON(api_url + "?level=" + seviye + "&bo=1&pc=" + target + "&ts="+Date.now(), function(data){
+            $.each( data.images, function( key, val ) {
+                kelimeler[key] = val.verse_text + "<br/><br/>" + val.chapter + ":" + val.verse_number;
+                aciklamalar[key] = val.book_title;
+                sayac++;
+                if(sayac == target-1) {
+                    starter_call = setTimeout(() => {
+                        document.getElementById("seviye").innerHTML = "Level: " + getLevelDisplay(seviye);
+                        document.getElementById("desc1").innerHTML = aciklamalar[0];
+                        document.getElementById("desc2").innerHTML = aciklamalar[1];
+                        if (target == 4) {
+                            document.getElementById("desc3").innerHTML = aciklamalar[2];
+                            document.getElementById("desc4").innerHTML = aciklamalar[3];
+                        }
+                        document.getElementById("kelime").innerHTML = kelimeler[dogru];
+                        bitti = false;
+                    }, 3000);
+                }
+            });
+        });
+        pausecomp(10);
+        $.getJSON(api_url + "?level=" + seviye + "&bo=1&pc=" + target + "&ts="+Date.now(), function(data){
+            $.each( data.images, function( key, val ) {
+                kelimeler[key+target*1] = val.verse_text + "<br/><br/>" + val.chapter + ":" + val.verse_number;
+                aciklamalar[key+target*1] = val.book_title;
+            });
+        });
+        pausecomp(10);
+        $.getJSON(api_url + "?level=" + seviye + "&bo=1&pc=" + target + "&ts="+Date.now(), function(data){
+            $.each( data.images, function( key, val ) {
+                kelimeler[key+target*2] = val.verse_text + "<br/><br/>" + val.chapter + ":" + val.verse_number;
+                aciklamalar[key+target*2] = val.book_title;
+            });
+        });
+        ilerleme = target*3; // 12 or 8
+        oyunBasla = true;
+    }else{ // show next question, also fetch next one
+        dogru = Math.floor(Math.random() * target);
+        $("#r0").css("border", "3px solid transparent");
+        $("#r1").css("border", "3px solid transparent");
+        $("#r2").css("border", "3px solid transparent");
+        $("#r3").css("border", "3px solid transparent");
+        var start_mark = target*2; // 4 or 8
+        document.getElementById("desc1").innerHTML = aciklamalar[ilerleme-start_mark];
+        document.getElementById("desc2").innerHTML = aciklamalar[ilerleme-(start_mark-1)];
+        if (target == 4) {
+            document.getElementById("desc3").innerHTML = aciklamalar[ilerleme-(start_mark-2)];
+            document.getElementById("desc4").innerHTML = aciklamalar[ilerleme-(start_mark-3)];
+        }
+        document.getElementById("kelime").innerHTML = kelimeler[ilerleme-start_mark+dogru];
+        wait = false;
+        $.getJSON(api_url + "?level=" + seviye + "&bo=1&pc=" + target + "&ts="+Date.now(), function(data){
+            $.each(data.images, function( key, val ) {
+                kelimeler[ilerleme] = val.verse_text + "<br/><br/>" + val.chapter + ":" + val.verse_number;
+                aciklamalar[ilerleme] = val.book_title;
+                ilerleme++;
+            });
+        });
+    }
+}
+
+var tries = 0;
+function sec(s){
+    if(!wait){
+        var delay = 2000;
+        var answered = false;
+        if(dogru == s){
+            soru++;
+            tries = 0;
+            answered = true;
+            $("#tryagain").hide();
+            createjs.Sound.play("correct");
+            $("#r"+s).css("border", "3px solid green");
+            puan++;
+            real_score++;
+            kombo++;
+            if(kombo == 10){
+                yildiz++;
+                if(yildiz == 1)
+                    document.getElementById("star1").style.visibility = "visible";
+                if(yildiz == 2)
+                    document.getElementById("star2").style.visibility = "visible";
+                if(yildiz == 3)
+                    document.getElementById("star3").style.visibility = "visible";
+                kombo = 0;
+                if(yildiz > 3){
+                    yildiz = 3;
+                }
+            }
+        }else{
+            createjs.Sound.play("wrong");
+            if (tries == 0) {
+                tries++;
+                $("#tryagain").show();
+                $("#tryagain").animate({opacity:0}, 150, "linear", function(){
+                      $(this).animate({opacity:1}, 150);
+                });
+                $("#r"+s).css("border", "3px solid red");
+                kombo = 0;
+            } else {
+                soru++;
+                real_score--;
+                tries = 0;
+                answered = true;
+                $("#tryagain").hide();
+                $("#r"+dogru).css("border", "3px solid green");
+                $("#r"+s).css("border", "3px solid red");
+                kombo = 0;
+                delay = 5000;
+            }
+        }
+        if (answered) {
+            document.getElementById("score").innerHTML = "Score : " + getScore();
+            wait = true;
+            setTimeout(() => {
+                yeniSoru();
+            }, delay);
+        }
+    }
+}
+
+function getLevelDisplay(level) {
+    if (level == 1) {
+        return 'Beginner' 
+    }
+    if (level == 2) {
+        return 'Advanced' 
+    }
+    return level 
+}
+
+function getBest(level) {
+    return best;
+}
+function setBest(level, value) {
+    best = value;
+}
+function getScore() {
+    if (real_score > 0) return real_score;
+    return 0;
+}
+function bitirMenu(forceQuit){
+    var best = getBest(seviye);
+
+    // show confirmation only if best is not beaten yet
+    if (best != 0 && getScore() <= best && !forceQuit) {
+        $('#confirm-quit').modal('show');
+        return;
+    }
+
+    clearTimeout(starter_call);
+
+    bitti = true;
+    if(getScore() > best){
+        setBest(seviye, getScore());
+        document.getElementById("eYPuan_M").innerHTML = "<font color='green'> New Best!</font>";
+    } else {
+        document.getElementById("eYPuan_M").innerHTML = "Best Score: " + best;
+    }
+    document.getElementById("oyun").style.display = "none";
+    document.getElementById("bitismenu").style.display = "block";
+    document.getElementById("seviye_M").innerHTML = "Level: " + getLevelDisplay(seviye);
+    var suregozuk;
+    if(saniye < 10) {
+        suregozuk = dakika + ":0" + saniye;
+    } else {
+        suregozuk = dakika + ":" + saniye;
+    }
+    document.getElementById("sure_M").innerHTML = suregozuk;
+    document.getElementById("score_M").innerHTML = "Score: " + getScore();
+    //console.log(seviye+"-"+soru+"-"+puan+"-"+best+"-"+suregozuk);
+
+    var time = saniye + dakika*60;
+    all_data = {
+        csrfmiddlewaretoken: "{{ csrf_token }}", 
+        grade_level:seviye,
+        total_correct:puan,
+        total_questions:soru,
+        stars:yildiz,
+        time_secs:time,
+        score:getScore()
+    };
+    $.ajax({
+        url: '{% url "ntb-report" %}',
+        method: 'POST',
+        data: all_data,
+        datatype:"json"
+    });
+}
+
+function menuyedon(){
+    seviye = 0;
+    puan = 0;
+    real_score = 0;
+    yildiz = 0;
+    kombo = 0;
+    saniye = 0;
+    dakika = 0;
+    wait = false;
+    //resimler = [];
+    aciklamalar = [];
+    kelimeler = [];
+    soru = 0;
+    oyunBasla = false;
+    $(".advanced-mark").hide();
+    $("#r0").css("border", "3px solid transparent");
+    $("#r1").css("border", "3px solid transparent");
+    $("#r2").css("border", "3px solid transparent");
+    $("#r3").css("border", "3px solid transparent");
+    document.getElementById("seviye").innerHTML = "";
+    document.getElementById("desc1").innerHTML = "";
+    document.getElementById("desc2").innerHTML = "";
+    document.getElementById("desc3").innerHTML = "";
+    document.getElementById("desc4").innerHTML = "";
+    //document.getElementById("im1").style.display = "none";
+    //document.getElementById("im2").style.display = "none";
+    //document.getElementById("im3").style.display = "none";
+    document.getElementById("kelime").innerHTML = "Loading...";
+    document.getElementById("star1").style.visibility = "hidden";
+    document.getElementById("star2").style.visibility = "hidden";
+    document.getElementById("star3").style.visibility = "hidden";
+    document.getElementById("sure").innerHTML = "0:0";
+    document.getElementById("score").innerHTML = "Score: 0";
+    document.getElementById("bitismenu").style.display = "none";
+    document.getElementById("seviyeSec").style.display = "block";
+}
+
+$(document).ready(function() {
+    menuyedon();
+    $( "#r0" ).mousemove(function() { if(!wait) {$("#r0").css("border", "3px solid blue");} });
+    $( "#r0" ).mouseleave(function() { if(!wait) {$("#r0").css("border", "3px solid transparent");} });
+    $( "#r1" ).mousemove(function() { if(!wait) {$("#r1").css("border", "3px solid blue");} });
+    $( "#r1" ).mouseleave(function() { if(!wait) {$("#r1").css("border", "3px solid transparent");} });
+    $( "#r2" ).mousemove(function() { if(!wait) {$("#r2").css("border", "3px solid blue");} });
+    $( "#r2" ).mouseleave(function() { if(!wait) {$("#r2").css("border", "3px solid transparent");} });
+    $( "#r3" ).mousemove(function() { if(!wait) {$("#r3").css("border", "3px solid blue");} });
+    $( "#r3" ).mouseleave(function() { if(!wait) {$("#r3").css("border", "3px solid transparent");} });
+});
+
+setInterval(function(){
+    if(!bitti){
+        saniye++;
+        if(saniye > 59){
+            saniye = 0;
+            dakika++;
+        }
+        if(saniye < 10)
+            document.getElementById("sure").innerHTML = dakika + ":0" + saniye;
+        else
+            document.getElementById("sure").innerHTML = dakika + ":" + saniye;
+    }
+}, 1000);
+
+function optimizeForMobile() {
+    //optimize screen
+    $('nav').remove();
+    var game = $('#confirm-quit').parent().detach();
+    game.removeClass('col-8');
+    game.find('.container').removeClass('container');
+    $(game).insertBefore('.container');
+    $('#oyun').css('width', '100%');
+    $('#seviyeSec').css('width', '100%');
+    $('#bitismenu').css('width', '100%');
+    $('#oyun').css('min-width', '500px');
+    $('#seviyeSec').css('min-width', '500px');
+    $('#bitismenu').css('min-width', '500px');
+    $('#confirm-quit').parent().removeClass('mx-auto');
+    $('#confirm-quit').parent().removeClass('col-md-8');
+    $('#bitir').removeClass('btn-block');
+    $('#bitir').css('width','30%');
+    $('.card-footer').css('padding','0');
+    $('html').css('-moz-transform','scale(0.7, 0.7)');
+    $('html').css('zoom', '0.7');
+    $('#page-title').remove();
+    $('#header-img').remove();
+}
+
+var md = new MobileDetect(window.navigator.userAgent);
+
+var Keyboard = null; 
+myKeyboard = null;
+
+if (md.tablet() != null) {
+    optimizeForMobile();
+    $('html').css('zoom', '0.8');
+    $('.card-text').css('font-size','27px');
+} else if (md.mobile() != null) {
+    optimizeForMobile();
+} else {
+    //console.log("DESKTOP");
+}
+
+</script>
+
+{% endblock %}

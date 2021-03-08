@@ -1,0 +1,847 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}<title>Complete the Verse</title>
+<style>
+/**
+  .game-menu {
+  line-height: 7px;
+}
+**/
+
+img {
+  border-radius: 0 !important;
+}
+
+.modal-dialog {
+  padding-top: 15%;
+}
+
+img:hover{
+cursor :pointer;
+}
+
+.card-text {
+  font-size: 23px;
+}
+</style>
+
+  
+
+{% if not play %}
+<div class="container mt-3">
+<center>
+
+{% include 'study/leaderboard.html' %}
+<a class="btn btn-lg btn-primary mt-2" style="width:150px;height:150px;padding-top:45px;font-size:2rem;" href="{% url "complete-the-verse" %}?play=1" role="button"><b>PLAY</b></a>
+</center>
+</div>
+{% endif %}
+
+{% if play %}
+<div class="modal fade" id="confirm-quit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Do you you really want to quit or keep trying to beat your best score?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">CONTINUE</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" OnClick="bitirMenu(true);">GIVE UP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-3">
+    <center>
+        <div id="seviyeSec" class="card" style="width: 50rem;display: block;">
+          <div class="card-body">
+            <center>
+                <div style="width:25rem;">
+                    <h5 class="card-title">Choose Level</h5>
+                    <button OnClick="seviyeSec(1);" type="button" class="btn btn-primary btn-lg btn-block">Beginner</button>
+                    <button OnClick="seviyeSec(2);" type="button" class="btn btn-primary btn-lg btn-block">Advanced</button>
+                </div>
+            </center>
+          </div>
+        </div>
+          
+        <div id="oyun" class="card text-center" style="width: 50rem;display: none;">
+        <div id="seviye" class="card-header"></div>
+        <div class="card-body pb-1">
+          <h6 id="score" class="card-title">Score : 0</h6>
+          <!--<div id="word-original" style="font-family: monospace; letter-spacing: 2px;">loading...</div>-->
+          <h2 id="word-input" class="card-title mb-0" style="font-family: monospace; letter-spacing: 2px;">Loading...</h2>
+          <div style="height: 30px;"><span id="tryagain" style="display: none;"><small>Try Again!</small></span></div>
+
+           <p id="desc1" class="card-text"></p>
+           {% comment %}
+           <div class="card" style="width:500px;margin: 0 auto;">
+              <div id="r0">
+                <div style="width:300px; margin: 0 auto;">
+                  <img style="display: none;" id="im1" src="about:blank" class="card-img-top" alt="..."></div>
+                </div>
+                <div style="height:100px;" class="overflow-auto">
+                  <p id="desc1" class="card-text"></p>
+                </div>
+              </div>
+           </div>
+           {% endcomment %}
+           <p class="mb-1"><img id="star1" style="visibility:hidden;" src="{% static "study/verse-practice/cross.png" %}" width="45" height="45"><img id="star2" style="visibility:hidden;" src="{% static "study/verse-practice/cross.png" %}" width="45" height="45"><img id="star3" style="visibility:hidden;" src="{% static "study/verse-practice/cross.png" %}" width="45" height="45"></p>
+           <div class="card-footer text-muted" style="line-height:0px;">
+             <h5 id="sure" class="card-title">0:00</h5><br>
+            <div class="simple-keyboard" style="display:none; margin-bottom:30px;"></div>
+            <button id="bitir" type="button" class="btn btn-danger btn-lg btn-block" OnClick = "bitirMenu();";>QUIT</button>
+           </div>
+        </div>
+        </div>
+
+        <div id="bitismenu" class="card" style="width: 50rem;display: none;">
+          <div class="card-body">
+            <center>
+               <h2 id="seviye_M" class="card-title">Level</h2><br>
+               <h3 id="sure_M" class="card-title">Time</h3><br>
+               <h4 id="score_M" class="card-title">Score</h4><br>
+               <h5 id="eYPuan_M" class="card-title">Best Score</h5><br>
+               <p class="card-text">Thank you for playing!</p>
+               <div style="width: 25rem;">
+                 <button type="button" class="btn btn-primary btn-lg btn-block" OnClick="menuyedon();">New Game</button><br>
+               </div>
+            </center>
+          </div>
+         </div>
+    </center>
+</div>
+{% endif %}
+<link rel="stylesheet" href="{% static "study/verse-practice/vkeyb/index.css" %}">
+<style>
+**
+ * hg-theme-default theme
+ */
+ .simple-keyboard.hg-theme-ios {
+  width: 750px;
+  margin: auto;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-row .hg-button {
+  flex-grow: 1;
+  cursor: pointer;
+  max-width: initial;
+}
+.simple-keyboard.hg-theme-ios .hg-row {
+  display: flex;
+}
+.simple-keyboard.hg-theme-ios .hg-row:not(:last-child) {
+  margin-bottom: 5px;
+}
+.simple-keyboard.hg-theme-ios .hg-row .hg-button:not(:last-child) {
+  margin-right: 5px;
+}
+.simple-keyboard.hg-theme-ios .hg-row:nth-child(2) {
+  margin-left: 18px;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  border-radius: 5px;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default.hg-layout-custom {
+  background-color: #e5e5e5;
+  padding: 5px;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button {
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 0;
+  background: white;
+  border-bottom: 1px solid #b5b5b5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  font-weight: 400;
+  font-size: 20px;
+  max-width: 60px;
+  min-width: 60px;
+  height: 60px;
+  min-height: 60px;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button:active,
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button:focus {
+  background: #e4e4e4;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button.hg-functionBtn {
+  background-color: #adb5bb;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button.hg-button-space,
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button.hg-button-shift,
+.simple-keyboard.hg-theme-ios.hg-theme-default
+  .hg-button.hg-button-shiftactivated {
+  background-color: #ffffff;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button-space {
+  max-width: 448px;
+  min-width: 448px;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button-enter {
+  max-width: 110px;
+  min-width: 110px;
+}
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button-altright,
+.simple-keyboard.hg-theme-ios.hg-theme-default .hg-button-back {
+  min-width: 80px;
+  max-width: 80px;
+}
+</style>
+<script src="{% static "study/verse-practice/vkeyb/index.min.js" %}"></script>
+
+
+<script src="{% static "study/verse-practice/soundjs.min.js" %}"></script></head>
+<script src="{% static "study/verse-practice/mobile-detect.min.js" %}"></script>
+
+<script>
+//https://stackoverflow.com/a/33906108
+Array.prototype.sample = function(){
+  return this[Math.floor(Math.random()*this.length)];
+}
+//https://stackoverflow.com/a/1431113
+String.prototype.replaceAt=function(index, replacement) {
+    return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
+}
+
+
+
+
+createjs.Sound.registerSound("{% static "study/verse-practice/correct.mp3" %}", "correct");
+createjs.Sound.registerSound("{% static "study/verse-practice/wrong.mp3" %}", "wrong");
+createjs.Sound.registerSound("{% static "study/verse-practice/type.mp3" %}", "type");
+
+var api_url = "{% url "ctv-get-word" %}";
+var seviye = 0;
+var oyunBasla = false;
+//var resimler = [];
+var aciklamalar = [];
+var aciklamalar2 = [];
+var aciklamalar3 = [];
+var kelimeler = [];
+var observed = [];
+var currentQuestion = 0;
+var best = {{ best }};
+var ilerleme = 0;
+var dogru = 0;
+var bitti = true;
+var saniye = 0;
+var dakika = 0;
+var puan = 0;
+var real_score = 0;
+var yildiz = 0;
+var kombo = 0;
+var soru = 0;
+var uniqueRange = 3;
+var wordBuffer = [];
+var targetSize = 5;
+var fetching = false;
+var fetchCount = null;
+var maxFetchLimit = 3;
+
+function seviyeSec(i){
+    seviye = i;
+    document.getElementById("seviyeSec").style.display = "none";
+    document.getElementById("oyun").style.display = "block";
+    yeniSoru();
+}
+
+
+function putWord() {
+    var marked = "";
+    for (var i = 0, l = answer.length; i < l; i++) {
+        var v = answer[i];
+        var color_begin = "";
+        var color_end = "";
+        if (hints.indexOf(i) != -1) {
+            color_begin = "<span style='color:green;'>";
+            color_end = "</span>";
+        }
+        if (v == '_') {
+            marked += "<span id='cur_" + i + "'>_</span>";
+        //} else if (v == ' ') {
+        //    marked += "&nbsp;"
+        } else {
+            marked += color_begin + v + color_end;
+        }
+    }
+    $("#word-input").html(marked);
+}
+
+var tries = 0;
+function handleKeyCode(keyCode) {
+    if (done) return;
+    createjs.Sound.play("type", {volume:0.3});
+    if (keyCode == 8) {
+        var new_cursor = cursor;
+        new_cursor--;
+        if (hints.length > 0) {
+            var current_item = positions[new_cursor];
+            while (hints.indexOf(current_item) != -1) {
+                new_cursor--; 
+                current_item = positions[new_cursor];
+            }
+        }
+        if (cursor > 0) {
+            cursor = new_cursor;
+            answer = answer.replaceAt(positions[cursor], "_");
+        }
+    } else {
+        var ch =  String.fromCharCode(keyCode);
+        if (keyCode == 39 || keyCode == 9 || keyCode == 32) {
+            ch = " ";
+        }
+        var rt = /^[A-Z\s]+$/.test(ch);
+        if (!rt) return;
+        //console.log(ch.toUpperCase());
+        answer = answer.replaceAt(positions[cursor], ch);
+
+        cursor++;
+        if (hints.length > 0) {
+            var current_item = positions[cursor];
+            while (hints.indexOf(current_item) != -1) {
+                cursor++; 
+                current_item = positions[cursor];
+            }
+        }
+
+        if (cursor+1 > positions.length) {
+            var delay = 2000;
+            done = true; 
+
+            if(kelimeler[currentQuestion] == answer) {
+                puan++;
+                real_score++;
+                kombo++;
+                $("#tryagain").hide();
+                if(kombo == 3){
+                    yildiz++;
+                    if(yildiz == 1)
+                        document.getElementById("star1").style.visibility = "visible";
+                    if(yildiz == 2)
+                        document.getElementById("star2").style.visibility = "visible";
+                    if(yildiz == 3)
+                        document.getElementById("star3").style.visibility = "visible";
+                    kombo = 0;
+                    if(yildiz > 3){
+                        yildiz = 3;
+                    }
+                }
+                createjs.Sound.play("correct");
+                var key = aciklamalar[currentQuestion]+":"+aciklamalar2[currentQuestion]+":"+aciklamalar3[currentQuestion];
+                observed.push(key);
+                $("#word-input").css("color","green"); 
+                setTimeout(prepareNext, delay);
+            } else {
+                createjs.Sound.play("wrong");
+                $("#word-input").css("color","red"); 
+                kombo = 0;
+                if (tries > 0) {
+                   real_score--;
+                   delay = 5000;
+                   hints = [];
+                   $("#tryagain").hide();
+                   $("#word-input").css("color","red"); 
+                   setTimeout(function() {
+                      $("#word-input").css("color","blue"); 
+                      $("#word-input").html(kelimeler[currentQuestion]);
+                      setTimeout(prepareNext, delay - 1500);
+                   }, 1500);
+                } else {
+                   tries++;
+                   for (var i = 0, l = answer.length; i < l; i++) {
+                       if (positions.indexOf(i) == -1) continue;
+                       var guess = answer[i];
+                       var real = kelimeler[currentQuestion][i];
+                       if (guess == real) {
+                           hints.push(i);
+                       }
+                   }
+                   $("#tryagain").show();
+                   $("#tryagain").animate({opacity:0}, 150, "linear", function(){
+                         $(this).animate({opacity:1}, 150);
+                   });
+                   setTimeout(function() {
+                       prepareQuestion(true);
+                   },delay);
+                }
+            }
+            document.getElementById("score").innerHTML = "Score : " + getScore();
+        }
+    }
+    putWord();
+}
+
+$(document).ready(function() {
+    $(document).on('keydown', function(e) {
+        if(e.altKey || e.metaKey || e.ctrlKey){
+            return;
+        }
+        if (e.keyCode == 39 || e.keyCode == 9 || e.keyCode == 32) {
+            e.preventDefault();
+        }
+        handleKeyCode(e.keyCode);
+    });
+    var blink = false;
+    var speed = 300;
+    setInterval(() => {
+       if(blink) {
+         $("#cur_"+positions[cursor]).css("opacity", 0);
+         blink = false;
+       }else {
+         $("#cur_"+positions[cursor]).css("opacity", 1);
+         blink = true;
+       }
+    }, speed);
+});
+
+function prepareNext() {
+    soru++; //previous one is answered
+    tries = 0;
+    wordBuffer.shift(); //remove first word 
+    currentQuestion++;
+    if (wordBuffer.length <= uniqueRange) {
+        maintainBuffer(function(){});
+    }
+    yeniSoru();
+}
+
+//orig = "asdsd, aaa & asdasd"
+//arr = orig.split(" ")
+//get_starting_position_of_chunk(arr,1)
+//given 1, this should return beginning position of "aaa" / orig[7]
+//given 3, this should return beginning position of of "asdasd" / orig[13]
+function get_starting_position_of_chunk(arr, index) {
+    var i = 0;
+    var pos = 0;
+    for (i = 0; i < index; i++) {
+        pos += arr[i].length;
+        pos += 1; // for space
+    }
+    return pos;
+}
+
+//keepPositions is used for renewing the question without changing it
+function prepareQuestion(keepPositions) {
+    if (wordBuffer.length == 0) {
+        console.log("can't show since no words are prepared");
+        return;
+    }
+
+    var verseText = kelimeler[currentQuestion];
+
+    cursor = 0;
+    done = false;
+
+    // begin question generation
+    if (!keepPositions) {
+        var key = aciklamalar[currentQuestion]+":"+aciklamalar2[currentQuestion]+":"+aciklamalar3[currentQuestion];
+        var delta = 0;
+        if (observed.indexOf(key) != -1) delta = 1;
+        var chunks = verseText.split(" ");
+        var chunk_test = /^[A-Z,.]+$/;
+        var pick_tries = 0;
+        var pick_n_words = (seviye == 1 ? 2 : 4) + delta;
+        chunk_indexes = [];
+        positions = []
+
+        //pick N words
+        while(chunk_indexes.length < pick_n_words && pick_tries < chunks.length * 2) {
+            pick_tries++;
+            num = Math.floor(Math.random() * chunks.length);
+            if (chunks[num].length < 2) continue;
+            if (!chunk_test.test(chunks[num])) continue;
+            if (chunk_indexes.indexOf(num) != -1) continue;
+            chunk_indexes.push(num);
+        }
+        chunk_indexes.sort(function(a, b) {return a - b;});
+
+        for (i = 0; i < chunk_indexes.length; i++) {
+            var word = chunks[chunk_indexes[i]];
+            var basePos = get_starting_position_of_chunk(chunks, chunk_indexes[i]);
+            var k = 0;
+            for (k = 0; k < word.length; k++) {
+                if (word[k] == ',' || word[k] == '.') continue;
+                positions.push(basePos + k);
+            }
+        }
+        positions.sort(function(a, b) {return a - b;});
+        hints = [];
+    }
+    // end question generation
+
+    if (positions.length == 0) {
+        console.log("oops, error") 
+        return;
+    }
+
+    answer = verseText;
+    //console.log("----");
+    for (var i = 0, l = positions.length; i < l; i++) {
+        var v =  positions[i];
+        //console.log("char: " + word.charAt(v));
+        if (hints.indexOf(v) != -1) {
+            if (v == positions[cursor]) {
+                cursor++; 
+            }
+            continue; 
+        }
+        answer = answer.replaceAt(v, "_");
+    }
+
+    //document.getElementById("im1").src = resimler[currentQuestion].src;
+    //document.getElementById("im1").style.display = "block";
+    document.getElementById("desc1").innerHTML = aciklamalar[currentQuestion];
+    document.getElementById("desc1").innerHTML += ", " + aciklamalar2[currentQuestion];
+    document.getElementById("desc1").innerHTML += ":" + aciklamalar3[currentQuestion];
+    $("#word-input").css("color","#000000"); 
+    putWord();
+}
+
+
+function maintainBuffer(callback) {
+    if (fetching) return;
+    fetching = true;
+    fetchCount = 0;
+    fillUp(callback);
+}
+
+function addWord(data) {
+    wordBuffer.push(data.book_title); 
+    //console.log('added word');
+    //console.log(wordBuffer); 
+    //var img = new Image();
+    //img.src = data.image.length > 0 ? data.image: "{% static "study/verse-practice/no-image.jpg" %}";
+    //resimler[ilerleme] = img;
+    kelimeler[ilerleme] = data.verse_text.toUpperCase(); 
+    aciklamalar[ilerleme] = data.book_title;
+    aciklamalar2[ilerleme] = data.chapter;
+    aciklamalar3[ilerleme] = data.verse_number;
+    ilerleme++;
+}
+
+function fillUp(callback) {
+    if (fetchCount >= maxFetchLimit) {
+        //fill with duplicates to match maxFetchLimit
+        if (wordBuffer.length >= 0 && fetchCount < targetSize) {
+            for (var i = 0, l = wordBuffer.length; i < l; i++) {
+                var data = {'image':resimler[i].src, 'word': kelimeler[i], 'desc': aciklamalar[i]}
+                addWord(data);
+                if (wordBuffer.length >= targetSize) break;
+            }
+        }
+        fetching = false;
+        callback();
+        return;
+    }
+    fill_call = $.getJSON(api_url + "?level=" + seviye + "&bo=0&pc=3&ts="+Date.now(), function(data){
+        fetchCount++;
+        var shouldContinue = true;
+        $.each( data.images, function( key, val ) {
+            if (wordBuffer.length >= targetSize) {
+                shouldContinue = false;
+                fetching = false;
+                callback();
+                return;
+            }
+            addWord(val);
+        });
+        if (shouldContinue) {
+            fill_timeout = setTimeout(function() {fillUp(callback);}, 1000);
+        } 
+    });
+}
+
+
+var fill_call;
+var fill_timeout;
+var positions = [];
+var chunk_indexes = [];
+var hints = [];
+var cursor = 0;
+var done = true;
+var answer = "#";
+
+function yeniSoru(){
+    if(!oyunBasla){
+        maintainBuffer(function() { oyunBasla = true; bitti = false; yeniSoru(); });
+        document.getElementById("seviye").innerHTML = "Level: " + getLevelDisplay(seviye);
+    }else{
+        if (!bitti) {
+            if (wordBuffer.length == 0) {
+                console.log("didn't load, trying again in 1 sec");
+                setTimeout(yeniSoru, 1000);
+            } else {
+                prepareQuestion(false);
+            }
+        }
+    }
+}
+
+
+function getLevelDisplay(level) {
+    if (level == 1) {
+        return 'Beginner' 
+    }
+    if (level == -2) {
+        return 'Advanced' 
+    }
+    return level 
+}
+
+function getBest(level) {
+    return best;
+}
+function setBest(level, value) {
+    best = value;
+}
+function getScore() {
+    if (real_score > 0) return real_score;
+    return 0;
+}
+function bitirMenu(forceQuit){
+    var best = getBest(seviye);
+
+    // show confirmation only if best is not beaten yet
+    if (best != 0 && getScore() <= best && !forceQuit) {
+        $('#confirm-quit').modal('show');
+        return;
+    }
+
+    if(fill_call !== null) fill_call.abort();
+    clearTimeout(fill_timeout);
+    bitti = true;
+
+    if(getScore() > best){
+        setBest(seviye, getScore());
+        document.getElementById("eYPuan_M").innerHTML = "<font color='green'> New Best!</font>";
+    } else {
+        document.getElementById("eYPuan_M").innerHTML = "Best Score: " + best;
+    }
+    document.getElementById("oyun").style.display = "none";
+    document.getElementById("bitismenu").style.display = "block";
+    document.getElementById("seviye_M").innerHTML = "Level: " + getLevelDisplay(seviye);
+    var suregozuk;
+    if(saniye < 10) {
+        suregozuk = dakika + ":0" + saniye;
+    } else {
+        suregozuk = dakika + ":" + saniye;
+    }
+    document.getElementById("sure_M").innerHTML = suregozuk;
+    document.getElementById("score_M").innerHTML = "Score: " + getScore();
+    //console.log(seviye+"-"+soru+"-"+puan+"-"+best+"-"+suregozuk);
+
+    var time = saniye + dakika*60;
+    all_data = {
+        csrfmiddlewaretoken: "{{ csrf_token }}", 
+        grade_level: seviye,
+        total_correct:puan,
+        total_questions:soru,
+        stars:yildiz,
+        score: getScore(),
+        time_secs:time
+    };
+    $.ajax({
+        url: '{% url "ctv-report" %}',
+        method: 'POST',
+        data: all_data,
+        datatype:"json"
+    });
+}
+
+function menuyedon(){
+    oyunBasla = false;
+    seviye = 0;
+    soru = 0;
+    puan = 0;
+    real_score = 0;
+    yildiz = 0;
+    kombo = 0;
+    saniye = 0;
+    dakika = 0;
+    tries = 0;
+    ilerleme = 0;
+    //resimler = [];
+    aciklamalar = [];
+    aciklamalar2 = [];
+    aciklamalar3 = [];
+    kelimeler = [];
+    observed = [];
+    wordBuffer = [];
+    positions = [];
+    hints = [];
+    chunk_indexes = [];
+    fetching = false;
+    fetchCount = null;
+    currentQuestion = 0;
+    $("#r0").css("border", "0px");
+    document.getElementById("seviye").innerHTML = "";
+    document.getElementById("desc1").innerHTML = "";
+    //document.getElementById("im1").style.display = "none";
+    document.getElementById("word-input").innerHTML = "Loading...";
+    document.getElementById("star1").style.visibility = "hidden";
+    document.getElementById("star2").style.visibility = "hidden";
+    document.getElementById("star3").style.visibility = "hidden";
+    document.getElementById("sure").innerHTML = "0:0";
+    document.getElementById("score").innerHTML = "Score: 0";
+    document.getElementById("bitismenu").style.display = "none";
+    document.getElementById("seviyeSec").style.display = "block";
+}
+
+
+setInterval(function(){
+    if(!bitti){
+        saniye++;
+        if(saniye > 59){
+            saniye = 0;
+            dakika++;
+        }
+        if(saniye < 10)
+            document.getElementById("sure").innerHTML = dakika + ":0" + saniye;
+        else
+            document.getElementById("sure").innerHTML = dakika + ":" + saniye;
+    }
+}, 1000);
+
+
+
+var myKeyboard = null;
+
+function onKeyPress(button) {
+  if (button === "{space}") {
+      handleKeyCode(32)
+      return;
+  }
+  if (button === "{bksp}") {
+      handleKeyCode(8)
+      return;
+  }
+  handleKeyCode(button.charCodeAt(0))
+}
+
+function optimizeForMobile() {
+    //optimize screen
+    $('nav').remove();
+    var game = $('#confirm-quit').parent().detach();
+    game.removeClass('col-8');
+    game.find('.container').removeClass('container');
+    $(game).insertBefore('.container');
+    $('#oyun').css('width', '100%');
+    $('#seviyeSec').css('width', '100%');
+    $('#bitismenu').css('width', '100%');
+    $('#oyun').css('min-width', '500px');
+    $('#seviyeSec').css('min-width', '500px');
+    $('#bitismenu').css('min-width', '500px');
+    $('#confirm-quit').parent().removeClass('mx-auto');
+    $('#confirm-quit').parent().removeClass('col-md-8');
+    $('#bitir').removeClass('btn-block');
+    $('#bitir').css('width','30%');
+    $('.card-footer').css('padding','0');
+    $('html').css('-moz-transform','scale(0.7, 0.7)');
+    $('html').css('zoom', '0.7');
+    $('#page-title').remove();
+    $('#header-img').remove();
+    $(".simple-keyboard").show();
+}
+
+var md = new MobileDetect(window.navigator.userAgent);
+
+var Keyboard = null; 
+myKeyboard = null;
+
+if (md.tablet() != null) {
+    optimizeForMobile();
+    $('html').css('zoom', '0.8');
+    $('.card-text').css('font-size','27px');
+    Keyboard = window.SimpleKeyboard.default;
+    myKeyboard = new Keyboard({
+        onKeyPress: button => onKeyPress(button),
+        theme: "hg-theme-default hg-theme-ios",
+        physicalKeyboardHighlight: true,
+        newLineOnEnter: true,
+        mergeDisplay: true,
+          theme: "hg-theme-default hg-theme-ios",
+          layoutName: "default",
+          layout: {
+            default: [
+              "Q W E R T Y U I O P {bksp}",
+              "A S D F G H J K L {enter}",
+              "{shift} Z X C V B N M , . {shift}",
+              "{space}"
+            ]
+          },
+          display: {
+            "{shift}": "⇧",
+            "{enter}": "return",
+            "{bksp}": "⌫",
+            "{space}": " ",
+            "{back}": "⇦"
+          }
+    });
+
+} else if (md.mobile() != null) {
+    optimizeForMobile();
+
+    //console.log("MOBILE");
+    Keyboard = window.SimpleKeyboard.default;
+    myKeyboard = new Keyboard({
+        onKeyPress: button => onKeyPress(button),
+        theme: "simple-keyboard hg-theme-default hg-layout-default",
+        physicalKeyboardHighlight: true,
+        newLineOnEnter: true,
+        mergeDisplay: true,
+          theme: 'hg-theme-default mobile-theme keyboardDefContainer',
+          layoutName: "default",
+          layout: {
+            default: [
+              "Q W E R T Y U I O P",
+              "A S D F G H J K L",
+              "{shift} Z X C V B N M {bksp}",
+              "{space}"
+            ],
+            numbers: [
+                "1 2 3",
+                "4 5 6",
+                "7 8 9",
+                "{abc} 0 {bksp}"
+            ]
+          },
+          display: {
+            "{numbers}": "123",
+            "{ent}": "return",
+            "{escape}": "esc ⎋",
+            "{tab}": "tab ⇥",
+            "{bksp}": "⌫",
+            "{capslock}": "caps lock ⇪",
+            "{shift}": "⇧",
+            "{controlleft}": "ctrl ⌃",
+            "{controlright}": "ctrl ⌃",
+            "{altleft}": "alt ⌥",
+            "{altright}": "alt ⌥",
+            "{metaleft}": "cmd ⌘",
+            "{metaright}": "cmd ⌘",
+            "{abc}": "ABC"
+          },
+    });
+} else {
+    //console.log("DESKTOP");
+}
+
+
+</script>
+
+{% endblock %}

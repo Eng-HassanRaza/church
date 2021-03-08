@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 align="center">Search Options</h3>
+<form method="get">
+    {{ object_list.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% for object in object_list.qs%}
+
+      	{% if object.student.church == request.user.church %}
+{% include 'administrator_attendance_list_inline.html'%}
+{% endif %}
+{% endfor %}
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+
+
+{% endblock %}

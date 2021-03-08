@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+<title>Edit Verse</title>
+
+{% block content %}<title>Edit</title>
+
+<h2>Edit a Verse</h2>
+<br/><br/>
+<div class="form-group">
+<form method= "POST">
+{% csrf_token %}
+{{form.as_p}}
+<button>Save Changes</button>
+</div>
+{% endblock %}
+

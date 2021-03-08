@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+<style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  </style>
+<form action="/">
+    <input type="submit" value="Return Home" />
+
+    <p></p>
+</form>
+
+{% if course_id %}
+  <form method='POST' action='.'>  {% csrf_token %}
+    <label>Date</label>
+    <input name="attendance_date" id="id_attendance_date"><br>
+    <table>
+      <tr>
+        <th>Student 
+         </th>
+        <th>Present?</th>
+      </tr>
+      {% for student in students %}
+      <tr>
+        <td>{{ student.first_name }}&nbsp;&nbsp;{{ student.last_name }}</td>
+        <td> 
+          <input type="hidden" value="{{course_id}}" name="enrollment">
+          <input type="checkbox" name="present_{{student.id}}" value="Present">Present
+        </td>
+      </tr>
+      {% endfor %}
+    </table><br>
+    <button type="submit"> Submit </button>
+
+    {% if atten %}
+    <p style="color: red;">These attendances are already recorded</p>
+    {% else %}
+    <p></p>
+    {% endif %}
+    </form>
+{% else %}
+  <form method='POST' action='.'>  {% csrf_token %}
+    {{ form.as_p }}
+    <button type=submit 'submit'> Submit </button>
+    </form>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,258 @@
+<style>
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+  </button>
+  <ul class="collapse navbar-collapse" id="navbarSupportedContent">
+  <ul class="navbar-nav mr-auto">
+
+  <a class="nav-link" href="/">&nbsp;&nbsp;Home</a>
+
+<a class="nav-link" href="/request-account">&nbsp;&nbsp;Request a Username</a>
+
+{% if user.is_authenticated %}
+<a class="nav-link" href="/logout/">Log Out</a>
+{% endif %}
+
+<li class="nav-item dropdown">
+<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Study</a>
+  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <a class="dropdown-item" href="{% url "verse-browse" %}">Read the Bible</a>
+    <a class="dropdown-item" href="/study/complete-the-verse/">Practice Completing the Verse</a>
+    <a class="dropdown-item" href="/study/name-the-book/">Practice Naming the Book</a>
+  </div>
+    </li>
+    {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Prayer</a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/prayer">Prayer Requests</a>
+              {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" or request.user.groups.all.0.name == "Member" %}
+                <a class="dropdown-item" href="/prayer-circle">Activate Prayer Circle</a>
+              {% endif %}
+        </div>
+        </li>
+{% else %}
+
+  <a class="nav-link" href="/anon-request-prayer">Request Prayer</a>
+{% endif %}
+
+     
+<!--   {% if request.user.groups.all.0.name == "Owner" %}
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Upload</a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <a class="dropdown-item" href="{% url "verse-upload" %}">Verses</a>
+      <a class="dropdown-item" href="/user-upload">Users</a>
+    </div>
+  </li>
+  {% endif %} -->
+  
+
+ {% if user.is_authenticated %} 
+    <li class="nav-item dropdown" id="contributions">
+         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Contributions</a>
+         <ul class="dropdown-menu"> 
+              <a class="dropdown-item" href="/contribution-information">Make a Contribution</a>
+                {% if request.user.groups.all.0.name == "Member" %}
+                    <a class="dropdown-item" href="/contribution-information">View or Edit My Contributions</a>
+                {% endif %}
+                {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+                    <a class="dropdown-item" href="/contributions-enter">Enter Contributions</a>
+                    <a class="dropdown-item" href="/contribution-information">Contribution Reports</a>
+                    <li class="dropdown-submenu"> <a href="#" class="dropdown-item">Reports</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/contribution-informationattendance-report-event">Report 1</a>
+                            <a class="dropdown-item" href="/contribution-informationattendance-report-student">Report 2</a>
+                            <a class="dropdown-item" href="/contribution-informationattendance-report-date">Report 3</a>
+                        </div>
+                    </li>
+                {% endif %}
+            </div>
+         </ul>
+        </li>
+
+{% else %}
+<a class="nav-link" href="/contribution-information">Make a Contribution</a>
+ {% endif %}     
+
+{% if user.is_authenticated %}
+
+
+{% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" or request.user.groups.all.0.name == "Member" %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Members</a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/members">View Members</a>
+       {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+        <a class="dropdown-item" href="/members-create">Add a Member</a>
+        <a class="dropdown-item" href="/contact-members/">Contact All Members</a>
+        <a class="dropdown-item" href="/download-members/">Download a Members List</a>
+        {% endif %}
+        </div>
+        </li>{% endif %}
+{% else %}
+<a class="nav-link" href="/member-information">Members</a>
+ {% endif %}
+
+
+{% if user.is_authenticated %} 
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Minutes</a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/minutes">View Minutes</a>
+{% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+          <a class="dropdown-item" href="/minutes-create">Record Minutes</a>
+          {% endif %}
+        </div>
+        </li>
+{% else %}
+<a class="nav-link" href="/minutes-information">Minutes</a>
+ {% endif %}
+
+
+
+{% if user.is_authenticated %} 
+  <li class="nav-item dropdown" id="attendance">
+         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Attendance</a>
+         <ul class="dropdown-menu">    
+        <a class="dropdown-item" href="/check-in">Check In</a>
+          <a class="dropdown-item" href="/attendance">View Your Attendance</a>
+          {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+          <a class="dropdown-item" href="/attendance-record">Record Attendance</a>
+<li class="dropdown-submenu"> <a href="#" class="dropdown-item">Reports</a>
+<div class="dropdown-menu" aria-labelledby="navbarDropdown"> 
+<a class="dropdown-item" href="/attendance-report-event">Events</a>
+<a class="dropdown-item" href="/attendance-report-student">Attendees</a>
+  <a class="dropdown-item" href="/attendance-report-date">Dates</a>
+          {% endif %}
+        </div>
+        </li></li></ul>
+        
+{% else %}
+<a class="nav-link" href="/attendance-info">How Does Attendance Work</a>
+ {% endif %}
+ 
+
+
+{% if user.is_authenticated %}
+        
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Classes and Events</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        
+        <a class="dropdown-item" href="/registration">Your Registrations
+        <a class="dropdown-item" href="/events">View Events or Classes</a>
+          <a class="dropdown-item" href="/register">Register or Enroll</a>
+          {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}          
+          <a class="dropdown-item" href="/events-create">Create a New Class or Event</a>
+          <a class="dropdown-item" href="/registration-admin">View All Church Registrations</a>
+            </div>
+</li>{% endif %}
+
+          {% else %}
+      <a class="nav-link" href="/events-information">What Are Classes and Events</a>  {% endif %}
+       
+   
+
+{% if user.is_authenticated %} 
+
+        {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+        <li class="nav-item dropdown" id="accounting">
+<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Accounting</a>
+      <ul class="dropdown-menu"> 
+<li class="dropdown-submenu"> <a href="#" class="dropdown-item">Accounts</a>
+<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <a class="dropdown-item" href="/accounts">View or Edit Church Accounts</a>
+    <a class="dropdown-item" href="/accounts-create">Add a New Church Account</a>
+    </div> </li>
+        </div></ul>        </li>{% endif %}
+{% else %}
+<a class="nav-link" href="/accounting-information">Accounting</a>
+ {% endif %} 
+
+
+
+
+
+
+
+
+        {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" or request.user.groups.all.0.name == "AdminMoney" %}
+ <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administrator</a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <a class="dropdown-item" href="/church/">Edit Your Church Information</a>
+    <a class="dropdown-item" href="/contributions-account">Set Up Contribution Account</a>
+
+    <a class="dropdown-item" href="/user-create/">Add a New User</a>
+
+      <a class="dropdown-item" href="/user-upload">Upload a List of Users</a>
+    
+    <a class="dropdown-item" href="/users/">View or Edit Users</a>
+        {% if request.user.groups.all.0.name == "Owner" %}
+<a class="dropdown-item" href="/admin">Admin Screen</a> 
+              <a class="dropdown-item" href="/church/">View or Edit Churches</a>
+    <a class="dropdown-item" href="/church-create/">Set Up Church</a>
+    <a class="dropdown-item" href="{% url "verse-upload" %}">Upload Verses</a>
+        {% endif %}
+      </div></div>
+        </li>
+        {% endif %}
+
+        </li>
+      </li>
+</nav>
+
+

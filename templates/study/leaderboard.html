@@ -1,0 +1,100 @@
+{% load static %}<title>Leaderboard</title>
+{% load ordinal %}
+<style>
+table.lb {
+    font-size: 1.1em;
+}
+table.lb thead tr th {
+    font-size: 1.4em;
+    text-align: center;
+}
+table.lb {
+    width: 600px;
+    background-image: url({% static 'study/images/leaderboard_bg.png' %}); background-repeat: repeat; 
+}
+.table-curved {
+    border-collapse: separate;
+}
+.table-curved {
+    border: solid #ccc 1px;
+    border-radius: 6px;
+}
+.table-curved td, .table-curved th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+.table-curved tr > *:first-child {
+    border-left: 0px;
+}
+.table-curved tr:first-child > * {
+    border-top: 0px;
+}
+</style>
+{% if management_lb_recover_url %}
+<a class="btn btn-primary mb-2" style="width:150px" href="{{ management_lb_recover_url }}" role="button"><b>Recover LB</b></a>
+{% endif %}
+{% if management_sc_reset_url %}
+<a class="btn btn-danger pr-1 mb-2" style="width:150px" onclick="return confirm('Are you sure?')" href="{{ management_sc_reset_url }}" role="button"><b>Reset Scores</b></a>
+{% endif %}
+
+
+<table class="table table-sm lb table-curved">
+<thead>
+<tr>
+    <th colspan=3>
+        HIGH SCORES
+    </th>
+</tr>
+</thead>
+<tbody>
+{% for row in leaderboard_scores %}
+<tr>
+    <td style="{% if row.0 == self_rank.score_place %}font-weight:bold;{% endif %}">{{ row.0 }}.</td><td>{{ row.1.get_full_short }}, {{ row.2 }}</td><td>{{ row.3 }}</td>{% if row.4 %}<td><a onclick="return confirm('All scores of that user will be set to 0. Time played will remain same, are you sure?')" href="{{ row.4 }}">[R]</a></td>{% endif %}
+</tr>
+{% endfor %}
+{% if self_rank.score_place > 3 %}
+<tr>
+    <td>{{ self_rank.score_place }}.</td><td>{{ self_rank.user.get_full_short }}, {{ self_rank.church }}</td><td>{{ self_rank.score }}</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+{% if self_rank.score_place > 3 %}
+{{ self_rank.student.first_name }}, right now YOU ARE IN <b>{{ self_rank.score_place|make_ordinal }}</b> Place!  GET ON THAT LEADERBOARD!<br/>
+{% endif %}
+{% comment %}
+{% if not self_rank.score_place %}
+{{ self_rank.student.first_name }}, you have no scores yet! GET ON THAT LEADERBOARD!
+{% endif %}
+{% endcomment %}
+
+<table class="table table-sm table-curved lb mt-4">
+<thead>
+<tr>
+    <th colspan=3>
+        TIME PLAYED
+    </td>
+</tr>
+</thead>
+<tbody>
+{% for row in leaderboard_times %}
+<tr>
+    <td style="{% if row.0 == self_rank.time_place %}font-weight:bold;{% endif %}">{{ row.0 }}.</td><td>{{ row.1.get_full_short }}, {{ row.2 }}</td><td>{{ row.3|minutes_to_hours }}</td>{% if row.4 %}<td><a onclick="return confirm('All times of that student will be set to 0. Score will remain same, are you sure?')" href="{{ row.4 }}">[R]</a></td>{% endif %}
+</tr>
+{% endfor %}
+{% if self_rank.time_place > 3 %}
+<tr>
+    <td>{{ self_rank.time_place }}.</td><td>{{ self_rank.user.get_full_short }}, {{ self_rank.church }}</td><td>{{ self_rank.time|minutes_to_hours }}</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+{% if self_rank.time_place > 3 %}
+{{ self_rank.student.first_name }}, right now YOU ARE IN <b>{{ self_rank.time_place|make_ordinal }}</b> Place!  GET ON THAT LEADERBOARD!<br/>
+{% endif %}
+{% comment %}
+{% if not self_rank.time_place %}
+{{ self_rank.student.first_name }}, you have no scores yet! GET ON THAT LEADERBOARD!
+{% endif %}
+{% endcomment %}
+

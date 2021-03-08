@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 align="center">Search Options</h3>
+<form method="get">
+    {{ object_list.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+<p>Users do not have access to all church information.  Users must be added as Members to view minutes or member information.  Church administrators can edit user access to a member by adding a new member from the members tab.</p>
+
+{% for object in object_list.qs%}
+{% include 'user_list_inline.html'%}
+
+{% endfor %}
+
+<p>
+	<br/><br/><br/><br/><br/><br/></p>
+<!-- 
+<form action="/logout/">
+    <input type="submit" value="Logout of System Here" >
+</form>
+ -->
+{% endblock %}

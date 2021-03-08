@@ -1,0 +1,43 @@
+<div class='col-80 col-md-100 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'></h3>
+
+{% if object.member == request.user %}
+              <h5 class = 'card-title'>
+                {{object.course.course_title}} <br/>
+{% if object.course.day %}
+                every
+                {{object.course.day}} 
+                {% endif %}<br/>
+{% if object.course.start_date %}
+                from {{object.course.start_date}}
+     {% if object.course.end_date %}   
+          to {{object.course.end_date}}   
+                {% endif %} <br/>
+{% endif %}
+{% if object.course.start_time %}
+                from {{object.course.start_time}}
+     {% if object.course.end_time %}   
+          to {{object.course.end_time}}   
+                {% endif %} <br/>
+{% endif %}
+{% if object.course.teacher %}
+                Teacher:
+                {{object.course.teacher.first_name}} 
+                {{object.course.teacher.last_name}} 
+                {% endif %}
+                <br/></h5>
+              <a href='{{ object.get_delete_url }}'>Unregister from
+                {{object.course.course_title}} </a>
+              <p></p>
+
+
+{% else %}
+<h5>You have no existing registrations.</h5>
+  {% endif %}
+
+      <p></p>
+  </div>
+  </div>
+</div>

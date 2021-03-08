@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block content %}
+<title>Upload Users</title>{% if messages %}
+	{% for message in messages %}
+
+<div>
+	<strong>{{message|safe}}</strong>
+</div>
+	{% endfor %}
+
+
+{% else %}
+<p></p>
+
+<b>Upload rules:</b><br/>
+<ul>
+
+<li><strong>
+Please download and use<a href="https://docs.google.com/spreadsheets/d/1pxX38xSKgBReUad5wJbf1NIJDoPCptCBLKJjjLWResw/edit?usp=sharing"> this template.</a></strong>
+</li>
+<li>
+<b>Make sure username is not used by other user.  If it is in use, the current user's information will be overwritten with the new information.</b>
+</li>
+</ul>
+<br/>
+
+<form method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<label>Upload Users</label>
+	<input type="file" name="file">
+	<button type = "submit">Upload</button>
+</form>
+
+{% endif %}{% endblock %}

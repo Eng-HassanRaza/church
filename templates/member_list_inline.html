@@ -1,0 +1,32 @@
+
+
+<div class='col-20 col-md-50 mb-1 mx-auto'>
+<div class='card'>
+  <div class='card-body'>
+      <h3 class = 'card-title'>
+        
+      {{object.first_name}} {{object.last_name}}</h3>
+      <div class = 'card-text'>eMail: <a href="mailto:{{object.email}}">{{object.email}}</a> <br/>Phone: {{object.phone_number}}</div>
+      <div>
+        {{object.street_address}}<br/>
+        {{object.street_address_line_2}}<br/>
+        {{object.city}}, {{object.state_abbrev}} {{object.zip_code}}<br/>
+      </div>
+
+
+    
+      {% if request.user.groups.all.0.name == "Owner" or request.user.groups.all.0.name == "Admin" %}
+
+      <a href='{{ object.get_edit_url }}' > Edit
+        {{object.first_name}} {{object.last_name}}</a><br/>
+     <a href='{{ object.get_delete_url }}' > Delete {{object.first_name}} {{object.last_name}}</a>
+
+ {% elif user.email == object.email%}        
+      <a href='{{ object.get_edit_url }}' > Edit Your Information</a>
+      <div></div>
+      {% endif %}
+      
+
+  </div>
+</div>
+</div>

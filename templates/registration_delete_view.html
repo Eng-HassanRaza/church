@@ -1,0 +1,22 @@
+<!-- #epiclive heroku -->
+{% extends "base.html" %}
+
+{% block content %}
+<p>Are you sure you want to unregister from:</p>
+{{object.course.course_title}}<p></p>
+
+<p></p>
+<form action="/registration">
+    <input type="submit" value="No, Keep Registration" />
+</form>
+
+<p></p>
+
+
+<form method='POST'> {% csrf_token%}
+
+  <button class = 'btn btn-danger'> Yes, Unregister from {{object.course.course_title}}</button>
+  </form>
+
+  
+{% endblock %}

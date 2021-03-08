@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load url_replace %}
+{% block content %}
+<title>King James Bible</title>
+<!-- <h3 align="center"> Scroll Down to View All or Filter </h3> -->
+<h3 align="center"></h3>
+<style>
+.form-control.is-valid,
+.form-control.is-invalid {
+    background-image: none;
+    padding-right: inherit;
+}
+</style>
+
+<!-- <div class="row">
+    <div class="border row col-md-6 boxlayout">
+      Column 1
+    </div> -->
+ <!--    <div class="border row col-md-6 boxlayout">
+      Column 2
+    </div>
+</div> -->
+
+
+
+<div class="row">
+    <div class="row col-md-6 boxlayout">
+      <form method="get">
+    {% bootstrap_form filter.form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% endbuttons %}
+</form>
+    </div>
+
+    <div class="row col-md-6 boxlayout pb-2 pt-2 ">
+
+{% if user.is_authenticated %}
+{% load static %}
+<p></p>
+    <center><img id="header-img" src="{% static 'images/openbible.png' %}" width="300px"/>
+{% else %}
+<strong>
+  <h3>Why Get The Church Site?</h3>
+  <ul>
+  <li>Affordable and Easy Setup</li>
+  <li>A-Rated Customer Support</li>
+  <li>Integrated Accounting</li>
+  <li>Private and Secure</li>
+  <li>Interact 24/7 With Your Flock</li>
+  <li>Accept Online Contributions</li>
+  <li><a href="/request-church-account">Request Information</a></li>
+</ul>
+
+{% endif %}
+ </div>
+</div>
+</div>
+<p></p>
+
+<h2><center>{{ object_list.0.book_title }}:{{ object_list.0.chapter }}</h2></center>
+
+
+
+    {% for item in object_list %}
+
+    <div class='card'>
+      <div class='card-body'>
+          <div class="container">
+              <div class="row">
+                  <div class="col-md-10">
+                     <!--  <h3 class = 'card-title'>
+                          {{ item.book_title }}
+                      </h3> -->
+                      <strong>{{ item.chapter }}:{{ item.verse_number }} <br/>
+                      </strong> {{ item.verse_text }}
+                  </div>
+              </div>
+              {#{% if request.user.groups.all.0.name == "Owner" %}#}
+              {% if request.user.is_superuser %}
+              <div class="row">
+                <div class="col-md-12 text-right">
+                    <a class="btn btn-danger btn-sm pr-1 mt-2" style="width:100px" onclick="return confirm('Are you sure you want to delete this verse?')" href="{% url "verse-delete" item.pk %}?{{ filter.form.data.urlencode|safe }}" role="button"><b>delete</b></a>
+                    <a class="btn btn-primary btn-sm pr-1 mt-2" target="_blank" style="width:100px" href="{% url "verse-update" item.pk %}" role="button"><b>edit</b></a>
+                </div>
+              </div>
+              {% endif %}
+          </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="{% url_replace request 'page' 1 %}">&laquo; First</a>
+            <a href="{% url_replace request 'page' object_list.previous_page_number %}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="{% url_replace request 'page' object_list.next_page_number %}">Next</a>
+            <a href="{% url_replace request 'page' object_list.paginator.num_pages %}">Last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+
+{% endblock %}
+
+
