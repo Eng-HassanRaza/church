@@ -74,6 +74,7 @@ from main.views import (
     add_payment_details,
     add_bank_details,
     church_contribution_view,
+    identity_verification,
 )
 
 urlpatterns = [
@@ -148,4 +149,5 @@ urlpatterns = [
     path("add-payment-details/<int:id>", add_payment_details,name="add-payment-details"),
     path("add-bank-details/<int:id>", add_bank_details,name="add-bank-details"),
     path("contributions-account/", church_contribution_view,name="church_contribution_view"),
+    path("identity-verification/", identity_verification,name="identity-verification"),
 ]

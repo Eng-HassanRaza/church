@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
+import os
+from uuid import uuid4
 STATE_CHOICES = (('AL', 'Alabama'), ('AK', 'Alaska'), ('AS', 'American Samoa'), ('AZ', 'Arizona'), ('AR', 'Arkansas'), ('AA', 'Armed Forces Americas'), ('AE', 'Armed Forces Europe'), ('AP', 'Armed Forces Pacific'), ('CA', 'California'), ('CO', 'Colorado'), ('CT', 'Connecticut'), ('DE', 'Delaware'), ('DC', 'District of Columbia'), ('FL', 'Florida'), ('GA', 'Georgia'), ('GU', 'Guam'), ('HI', 'Hawaii'), ('ID', 'Idaho'), ('IL', 'Illinois'), ('IN', 'Indiana'), ('IA', 'Iowa'), ('KS', 'Kansas'), ('KY', 'Kentucky'), ('LA', 'Louisiana'), ('ME', 'Maine'), ('MD', 'Maryland'), ('MA', 'Massachusetts'), ('MI', 'Michigan'), ('MN', 'Minnesota'), ('MS', 'Mississippi'), ('MO', 'Missouri'), ('MT', 'Montana'), ('NE', 'Nebraska'), ('NV', 'Nevada'), ('NH', 'New Hampshire'), ('NJ', 'New Jersey'), ('NM', 'New Mexico'), ('NY', 'New York'), ('NC', 'North Carolina'), ('ND', 'North Dakota'), ('MP', 'Northern Mariana Islands'), ('OH', 'Ohio'), ('OK', 'Oklahoma'), ('OR', 'Oregon'), ('PA', 'Pennsylvania'), ('PR', 'Puerto Rico'), ('RI', 'Rhode Island'), ('SC', 'South Carolina'), ('SD', 'South Dakota'), ('TN', 'Tennessee'), ('TX', 'Texas'), ('UT', 'Utah'), ('VT', 'Vermont'), ('VI', 'Virgin Islands'), ('VA', 'Virginia'), ('WA', 'Washington'), ('WV', 'West Virginia'), ('WI', 'Wisconsin'), ('WY', 'Wyoming'))
 
 
@@ -52,6 +53,7 @@ class Church(models.Model):
     stripe_id = models.CharField(max_length=250, null=False,blank=True)
     payment_verified = models.BooleanField(default=False)
     is_bank_verified = models.BooleanField(default=False)
+    is_identity_verified = models.BooleanField(default=False)
     class Meta:
         unique_together = ('name', 'phone_number')
 
@@ -555,3 +557,25 @@ class Bank_Details(models.Model):
         """String for representing the Model object."""
         return "%s" % (self.account_holder_name)
 
+
+
+def path_and_rename(instance, filename):
+    # church_id = request.user.church.id
+    upload_to = 'images'
+    ext = filename.split('.')[-1]
+    # get filename
+    if instance.church.id:
+        filename = 'church_{}.{}'.format(instance.church.id, ext)
+    else:
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
+
+class Identity_Verification(models.Model):
+    title = models.CharField(max_length=20)
+    church = models.ForeignKey(Church, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=path_and_rename, default=None)
+
+    def __str__(self):
+        return self.title

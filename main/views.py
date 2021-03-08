@@ -42,7 +42,7 @@ import  os
 
 User = get_user_model()
 
-from .models import Registration, Attendance, Members, Minutes, Church, PrayerRequest, Course, Accounts
+from .models import Registration, Attendance, Members, Minutes, Church, PrayerRequest, Course, Accounts,Identity_Verification
 
 from study.models import VerseStudyEntry
 
@@ -77,6 +77,7 @@ from .forms import (
    EnterContributionsForm,
    PaymentDetailForm,
    BankDetailForm,
+    IdentityVerificationForm
 )
 
 def accounting_information(request):
@@ -990,15 +991,18 @@ def course_roster_view(request):
 @login_required
 def contributions_enter(request):
     # list_of_users_by_church = User.objects.filter(is_active=True, church_id=request.user.church.id, groups__name="Member")
-    list_of_users_by_church = User.objects.filter(is_active=True, church_id=request.user.church.id)
-
-    form = EnterContributionsForm(request.POST or None,user=request.user)
-    id = request.user.church.id
-    form.fields['church'].queryset = Church.objects.filter(id=request.user.church.id)
-    if form.is_valid():
-        form.save()
-        form = EnterContributionsForm(user=request.user)
-        return redirect("/")
+    if request.user.church:
+        list_of_users_by_church = User.objects.filter(is_active=True, church_id=request.user.church.id)
+        form = EnterContributionsForm(request.POST or None,user=request.user)
+        id = request.user.church.id
+        form.fields['church'].queryset = Church.objects.filter(id=request.user.church.id)
+        if form.is_valid():
+            form.save()
+            form = EnterContributionsForm(user=request.user)
+            return redirect("/")
+    else:
+        form = EnterContributionsForm(request.POST or None,user=None)
+        form = "form"
     template_name = "form.html"
     context = {"form": form, "title": "my_title"}
     return render(request, template_name, context)
@@ -1241,7 +1245,7 @@ def add_payment_details(request,id):
         church.payment_verified = True
         church.save()
         form = PaymentDetailForm(church=church)
-        return redirect("/church/")
+        return redirect("/contributions-account/")
     template_name = "payment_details_form.html"
     context = {"form": form, "title": "my_title","church_id":id}
     return render(request, template_name, context)
@@ -1255,13 +1259,10 @@ def add_bank_details(request,id):
         form_obj = form.save()
         create_bank_account(acct_id,form_obj)
         update_payouts_schedule(acct_id)
-        image_path = os.path.join(settings.BASE_DIR, "static/images", "success.png")
-
-        upload_identity_verification_file(acct_id, image_path)
         church.is_bank_verified = True
         church.save()
         form = BankDetailForm(church=church)
-        return redirect("/church/")
+        return redirect("/contributions-account/")
     template_name = "bank_details_form.html"
     context = {"form": form, "title": "my_title","church_id":id}
     return render(request, template_name, context)
@@ -1276,4 +1277,22 @@ def church_contribution_view(request):
     template_name = "church_contribution_list_view.html"
     context = {"object_list": church_filter, "title": my_title}
     return render(request, template_name, context)
+
+
+@login_required
+def identity_verification(request):
+    church = Church.objects.filter(id=request.user.church.id).first()
+    if request.method == "POST":
+        form = IdentityVerificationForm(request.POST, request.FILES,church=church)
+        if form.is_valid():
+            form.save()
+            image_path = os.path.join(settings.BASE_DIR, "media/images", "church_"+str(church.id)+".png")
+            upload_identity_verification_file(church.stripe_id, image_path)
+            church.is_identity_verified = True
+            church.save()
+            return redirect("/contributions-account/")
+    else:
+        form = IdentityVerificationForm(church=church)
+    img = Identity_Verification.objects.last()
+    return render(request, "identity_verification.html", {"form": form, "img": img})
 

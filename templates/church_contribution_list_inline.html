@@ -9,7 +9,8 @@
         {{object.city}}, {{object.state_abbrev}} {{object.zip_code}}<br/>
         Email: {{object.email}}<br/>
           Payment User Details: {%if object.payment_verified%}<button disabled style="background:green;color:white">Verified</button>{%else%}<a href={% url 'add-payment-details' id=object.id %}><button style="background:red;color:white">Not Verified</button></a>{%endif%}<br/><br/>
-          Bank Details: {%if object.is_bank_verified%}<button disabled style="background:green;color:white">Verified</button>{%else%}<a href={% url 'add-bank-details' id=object.id %}><button style="background:red;color:white" {%if object.payment_verified%}{%else%}disabled{%endif%}>Not Verified</button></a>{%endif%}<br/>
+          Bank Details: {%if object.is_bank_verified%}<button disabled style="background:green;color:white">Verified</button>{%else%}<a href={% url 'add-bank-details' id=object.id %}><button style="background:red;color:white" {%if object.payment_verified%}{%else%}disabled{%endif%}>Not Verified</button></a>{%endif%}<br/><br/>
+          Identity Verification: {%if object.is_identity_verified%}<button disabled style="background:green;color:white">Verified</button>{%else%}<a href={% url 'identity-verification' %}><button style="background:red;color:white" {%if object.payment_verified and object.is_bank_verified %}{%else%}disabled{%endif%}>Not Verified</button></a>{%endif%}<br/>
       </div>
 
 

@@ -10,6 +10,7 @@ djangorestframework==3.12.2
 gunicorn==19.9.0
 idna==2.10
 leaderboard @ git+git://github.com/YuriHeupa/leaderboard-python.git@ccf3b284db35512950909aed8d1d3436557d3efb
+Pillow==8.1.2
 psycopg2==2.8.3
 pytz==2021.1
 redis==3.4.1

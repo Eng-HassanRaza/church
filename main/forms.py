@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-from .models import Registration, Attendance, Members, Minutes, Church, User, PrayerRequest, Course,Payment_Detials,Bank_Details
+from .models import Identity_Verification,Registration, Attendance, Members, Minutes, Church, User, PrayerRequest, Course,Payment_Detials,Bank_Details
 from .models import Accounts, FixedAssets, CurrentLiabilities,LongTermLiabilities, Income,Expense, Vendor, Customer, Transactions, AccountsPayable, AccountsReceivable,Contribution
 
 FUNDTAG = [
@@ -399,9 +399,10 @@ class EnterContributionsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        self.fields['church'].queryset = Church.objects.filter(id=user.church.id)
-        self.fields['user'].queryset = User.objects.filter(is_active=True, church_id=user.church.id)
+        if user:
+            super().__init__(*args, **kwargs)
+            self.fields['church'].queryset = Church.objects.filter(id=user.church.id)
+            self.fields['user'].queryset = User.objects.filter(is_active=True, church_id=user.church.id)
 
 Gender_TYPE = [
     ("male","male"),
@@ -419,8 +420,8 @@ class PaymentDetailForm(forms.ModelForm):
     church = forms.ModelChoiceField(queryset=Church.objects.order_by('name').values_list('name', flat=True).distinct())
     first_name = forms.CharField(required=True,label="First Name")
     last_name = forms.CharField(required=True,label="Last Name")
-    id_number = forms.CharField(required=True,label="SSN")
-    phone = forms.CharField(required=True,label="Phone Number")
+    id_number = forms.CharField(required=True,label="SSN",max_length=9,min_length=9, widget=forms.TextInput(attrs={'placeholder': 'Enter 9 digit number'}))
+    phone = forms.CharField(required=True,label="Phone Number",max_length=10,min_length=10, widget=forms.TextInput(attrs={'placeholder': 'Enter 10 digit number'}))
     gender = forms.ChoiceField(required=True, choices=Gender_TYPE,label="Gender")
     country = forms.ChoiceField(required=True, choices=COUNTRY,label="Country")
     state = forms.ChoiceField(required=True, choices=US_STATES,label="State")
@@ -471,6 +472,24 @@ class BankDetailForm(forms.ModelForm):
             "account_holder_name",
         ]
 
+
+    def __init__(self, *args, **kwargs):
+        church = kwargs.pop('church', None)
+        super().__init__(*args, **kwargs)
+        self.fields['church'].queryset = Church.objects.filter(id=church.id)
+
+class IdentityVerificationForm(forms.ModelForm):
+    name = forms.CharField()
+    church = forms.ModelChoiceField(queryset=Church.objects.order_by('name').values_list('name', flat=True).distinct())
+    image = forms.ImageField()
+
+    class Meta:
+        model = Identity_Verification
+        fields = [
+            "name",
+            "church",
+            "image",
+        ]
 
     def __init__(self, *args, **kwargs):
         church = kwargs.pop('church', None)

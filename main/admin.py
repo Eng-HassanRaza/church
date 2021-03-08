@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Members, Attendance, Minutes, Church, Course, Registration, User,Payment_Detials,Bank_Details
+from .models import Identity_Verification,Members, Attendance, Minutes, Church, Course, Registration, User,Payment_Detials,Bank_Details
 
 @admin.register(Church)
 class ChurchAdmin(admin.ModelAdmin):
@@ -108,6 +108,7 @@ class UserAdminAdvanced(UserAdmin):
 admin.site.register(User, UserAdminAdvanced)
 admin.site.register(Payment_Detials)
 admin.site.register(Bank_Details)
+admin.site.register(Identity_Verification)
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = (
