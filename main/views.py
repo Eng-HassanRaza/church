@@ -1012,8 +1012,7 @@ def contributions_enter(request):
     # return render(request, template_name, context)
 
 
-# stripe.api_key = "sk_live_R8lejwrvJOrZgDZDdFuFMLv900E2UUvU7h"
-stripe.api_key = "sk_test_oPzX9vEJPM6dUFIMZdkZubsc002KBVt8AE"
+stripe.api_key = settings.STRIPE_API_KEY
 
 
 #############################

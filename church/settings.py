@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 
 from .email_info import *
+from decouple import config
 #for gmail
 EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_HOST = EMAIL_HOST
@@ -24,7 +25,7 @@ EMAIL_PORT = EMAIL_PORT
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+STRIPE_API_KEY = config('STRIPE_API_KEY')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
